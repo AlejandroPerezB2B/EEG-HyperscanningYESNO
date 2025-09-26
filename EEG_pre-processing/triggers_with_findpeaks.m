@@ -1,6 +1,6 @@
 function EEG = triggers_with_findpeaks(EEG)
 % Takes the information contained in the trigger channel of the EEG data
-% recorded from Nueuroscan aplifiers with Curry software (old version) and 
+% recorded from Nueuroscan amplifiers with Curry software (old version) and 
 % creates events according to the event markers used on HyperYESNO experiment.
 %
 % Input:  EEG data in EEGLAB format (.set)
@@ -58,5 +58,7 @@ if ~isempty(kill)
     for k = 1:numel(EEG.event), EEG.event(k).urevent = k; end         % reindex urevent
 end
 EEG = eeg_checkset(EEG,'eventconsistency');
+
+if sum(strcmp({EEG.event.type},'BlockStart'))>32, warning('Case %s has more than the 32 trials expected.', EEG.filename); end
 
 end
