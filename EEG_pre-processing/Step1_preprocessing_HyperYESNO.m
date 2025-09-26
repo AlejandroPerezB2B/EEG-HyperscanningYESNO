@@ -4,7 +4,7 @@ data_path = 'D:\EEG_data_HyperYESNO';
 assert(isfolder(data_path), 'Data path not found: %s', data_path);
 
 % Subjects to process (Curry files expected like "Acquisition <ID>.dap")
-subject_ids = [41, 45:47];
+subject_ids = [41, 45:78];
 
 for k = 1:numel(subject_ids)
     subj    = subject_ids(k);
@@ -96,4 +96,5 @@ for k = 1:numel(subject_ids)
     EEG_B = pop_saveset(EEG_B, 'filename', sprintf('%s-B.set', dyadStr), 'filepath', subB_dir,'savemode','twofiles');
 
 end
+
 
