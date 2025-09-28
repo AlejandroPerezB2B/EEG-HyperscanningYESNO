@@ -8,9 +8,9 @@ Participants completed a dyadic yes/no guessing task/game similar to the Hedbanz
 
 Stimuli were 32 target words drawn from four superordinate categories (complete list in Supplementary Materials 1): Animals, Professions, Meals, and Objects. The "Guesser" received information about the category corresponding to the turn. Example items included dog, horse, lion (Animals); doctor, teacher, pilot (Professions); pizza, sushi, cake (Meals) and laptop, toothbrush, chair (Objects). In the case of the broader Object category, an additional hint was provided (e.g., "transport" for Object "car"). The presentation order of the target words was identical for all dyads. Each round lasted 60 seconds maximum. However, if a round concluded before (i.e., a correct guess), participants can advance immediately to the subsequent trial. Both partners shared control of the presentation to proceed and could advance the trial when ready (self-paced). Before the main task, participants completed two practice trials to familiarise themselves with the procedure and response pad. Sessions were also video-recorded with the laptops' front cameras. Participants were asked to keep their gaze on the screen and remain within the camera frame during the entire experiment.
 
-## Step1_preprocessing_HyperYESNO
+## Step1_preprocessing_HyperYESNO.m
 
-Batch import, trigger extraction, trim, split, and save
+Scrip to import, trigger extraction, trim, split, and save
 
 Minimal MATLAB script to load Curry EEG, decode triggers, trim, split by participants (A/B), and save EEGLAB sets per dyad.
 
