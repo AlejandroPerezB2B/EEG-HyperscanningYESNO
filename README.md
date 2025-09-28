@@ -23,20 +23,6 @@ Minimal MATLAB script to load Curry EEG, decode triggers, trim, split by partici
 - Apply `standard-10-5-cap385.elp` to A; copy geometry to B (keep B impedances).
 - Rename A: `I1` (ch 60), `I2` (ch 64). Remove `M1/M2`. Save to `DyadXX/SubjA` and `DyadXX/SubjB`.
 
-### Input layout
-```
-D:\EEG_data_HyperYESNO\
-  Acquisition 41.dap (+ companions)
-  Acquisition 45.dap
-  ...
-```
-
-Set at top:
-```matlab
-data_path   = 'D:\EEG_data_HyperYESNO';
-subject_ids = [41, 45:78];
-```
-
 ### Trigger decoding (`triggers_with_findpeaks.m`)
 Stores numeric **code** in `EEG.event.value` and string **label** in `EEG.event.type`.
 
