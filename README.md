@@ -10,7 +10,7 @@ Stimuli were 32 target words drawn from four superordinate categories (complete 
 
 ## Step1_preprocessing_HyperYESNO.m
 
-Script to import, trigger extraction, trim, split, and save
+Script to import, trigger extraction, trim, split, and save\
 Minimal MATLAB script to load Curry EEG, decode triggers, trim, split by participants (A/B), and save EEGLAB sets per dyad.
 ### Dependencies
 - MATLAB + EEGLAB
