@@ -11,8 +11,11 @@ Stimuli were 32 target words drawn from four superordinate categories (complete 
 ## Step1_preprocessing_HyperYESNO.m
 
 Script to import, trigger extraction, trim, split, and save
-
 Minimal MATLAB script to load Curry EEG, decode triggers, trim, split by participants (A/B), and save EEGLAB sets per dyad.
+### Dependencies
+- MATLAB + EEGLAB
+- **loadcurry 3.3.2** plugin
+- `standard-10-5-cap385.elp` (EEGLAB resource)
 
 ### Workflow
 - Load Curry files via `loadcurry` (**loadcurry 3.3.2** required).
@@ -39,9 +42,5 @@ else → unknow
 ```
 Also collapses consecutive `BlockStart`, renumbers `urevent`, warns if `>32` blocks.
 
-### Dependencies
-- MATLAB + EEGLAB
-- **loadcurry 3.3.2** plugin
-- `standard-10-5-cap385.elp` (EEGLAB resource)
 
 
