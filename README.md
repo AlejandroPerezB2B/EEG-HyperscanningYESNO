@@ -13,7 +13,7 @@ Stimuli were 32 target words drawn from four superordinate categories (complete 
 Script to import, trigger extraction, trim, split, and save\
 Minimal MATLAB script to load Curry EEG, decode triggers, trim, split by participants (A/B), and save EEGLAB sets per dyad.
 ### Dependencies
-- MATLAB + EEGLAB
+- MATLAB + EEGLAB 2025.0.0
 - **loadcurry 3.3.2** plugin
 - `standard-10-5-cap385.elp` (EEGLAB resource)
 
@@ -41,6 +41,30 @@ Mapping:
 else → unknow
 ```
 Also collapses consecutive `BlockStart`, renumbers `urevent`, warns if `>32` blocks.
+
+## Step2_loader_doingPREP
+
+### Dependencies
+- **PrepPipeline0.57.0** plugin
+
+### Workflow
+The PREP pipeline was used to: high-pass filter data at 1 Hz, detect bad channels, perform a robust average reference, and interpolate bad data.
+(https://www.frontiersin.org/articles/10.3389/fninf.2015.00016/full)
+Remember to report in the paper how many channel removals were done.
+
+## Step3_loader_doing_ICA_ASR
+
+### Dependencies
+- **ICLabel1.7**
+- **Viewprops1.5.4**
+- **clean_rawdata2.11**
+- 
+First, we used ICA (extended Infomax) specifically to identify eye movements on the recordings.
+Then, we classified components using ICLabel; we removed only those with a high probability (>90%) of corresponding to blinks/saccades.
+(ICLabel: Pion-Tonachini et al., NeuroImage 2019 — https://doi.org/10.1016/j.neuroimage.2019.05.026)
+We back-project the non-eye ICs to obtain an “eye-clean” continuous dataset, which was submitted to ASR (clean_rawdata) to catch bursts/motion/muscle transients.
+(ASR cites here)
+Remember to report in the paper the number of windows repaired and the parameters used in the ASR.
 
 
 
