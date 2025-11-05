@@ -131,7 +131,7 @@ These files ensure reproducibility and allow further verification of synchronisa
 
 ## Reproducibility Notes
 - The synchronisation was performed using MATLAB R2025a and the built-in `VideoReader`, `VideoWriter`, and `audioread` functions.  
-- The `TargetFs` parameter was set to **16,000 Hz**, matching the native sample rate of the recordings, to maximise temporal precision.  
+- The `TargetFs` parameter was set to **16,000 Hz**, although the native sample rate of the recordings was 44,100, to reduce the computational time while keeping the temporal precision.  
 - All parameters are configurable in the wrapper script.
 
 ---
