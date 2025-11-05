@@ -72,21 +72,37 @@ Both scripts are included in this repository with detailed in-line documentation
 
 ## Folder Structure
 D:\HyperYESNO_videosCUT
+
 │
+
 ├── Dyad01
+
 │ ├── Dyad01-A_cut
+
 │ │ ├── Dyad01-A_.mp4
+
 │ │ ├── Dyad01-A_sync.mp4
+
 │ │ └── Dyad01-A_sync_log.mat
+
 │ └── Dyad01-B_cut
+
 │ ├── Dyad01-B_.mp4
+
 │ ├── Dyad01-B_sync.mp4
+
 │ └── Dyad01-B_sync_log.mat
+
 │
+
 ├── Dyad02
+
 │ └── ...
+
 │
+
 └── Dyad35
+
 └── ...
 
 
@@ -119,11 +135,6 @@ These files ensure reproducibility and allow further verification of synchronisa
 - All parameters are configurable in the wrapper script.
 
 ---
-
-## Citation
-If you use or adapt this code in your own research, please cite this repository as:
-
-> Domínguez-Arriola, A. (2025). *HyperYESNO video synchronisation pipeline* [Code repository]. GitHub.
 
 ---
 
