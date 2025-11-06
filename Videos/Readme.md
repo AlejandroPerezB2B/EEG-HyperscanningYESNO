@@ -73,25 +73,20 @@ This step corrects for the small temporal offset between the two laptops’ reco
    ```
    [st, out] = system('ffmpeg -version'); disp(out)
 
+   If st is 0 and you see version text, MATLAB can access ffmpeg.
 
-If st is 0 and you see version text, MATLAB can access ffmpeg.
+5. **Add FFmpeg to PATH so any app (including MATLAB) can find it:** (if needed)
 
-⚙️ Manually Add FFmpeg to PATH (if needed)
+   - Start → type Environment Variables → Edit the system environment variables/
 
-Add FFmpeg to PATH so any app (including MATLAB) can find it:
+   - Click Environment Variables…/
 
-Start → type Environment Variables → Edit the system environment variables
+   - Under System variables, select Path → Edit → New/
 
-Click Environment Variables…
+   - Add the line: C:\ffmpeg\bin/
 
-Under System variables, select Path → Edit → New
+   - Confirm with OK → OK
 
-Add the line:
-
-C:\ffmpeg\bin
-
-
-Confirm with OK → OK
 Two MATLAB functions are used:
 
 - **`sync_videos_by_audio.m`**  
