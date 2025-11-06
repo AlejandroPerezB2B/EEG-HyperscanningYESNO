@@ -70,7 +70,7 @@ This step corrects for the small temporal offset between the two laptops’ reco
    ffmpeg -version
 
 4. **You can verify that MATLAB can see FFmpeg by running:**
-   [st, out] = system('ffmpeg -version'); disp(out)
+   ```[st, out] = system('ffmpeg -version'); disp(out)
 
 
 If st is 0 and you see version text, MATLAB can access ffmpeg.
