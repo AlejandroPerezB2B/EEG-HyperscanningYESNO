@@ -77,13 +77,13 @@ If st is 0 and you see version text, MATLAB can access ffmpeg.
 
 5. **Add FFmpeg to PATH so any app (including MATLAB) can find it:** (if needed)
 
-   - Start → type Environment Variables → Edit the system environment variables \
+   - Start → type Environment Variables → Edit the system environment variables
 
-   - Click Environment Variables… /
+   - Click Environment Variables… 
 
-   - Under System variables, select Path → Edit → New /
+   - Under System variables, select Path → Edit → New
 
-   - Add the line: C:\ffmpeg\bin/
+   - Add the line: C:\ffmpeg\bin
 
    - Confirm with OK → OK
 
