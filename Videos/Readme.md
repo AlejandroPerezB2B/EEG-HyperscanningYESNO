@@ -57,6 +57,43 @@ This step corrects for the small temporal offset between the two laptops’ reco
 4. **Export:** The synchronised videos are saved with matching start times, and a small `.mat` file is generated containing synchronisation metadata.
 
 #### Implementation
+
+### 🛠️ Install FFmpeg — via `winget` (built-in package manager on Windows 11)
+
+1. **Open PowerShell (Admin)**  
+2. **Run:**
+   ```powershell
+   winget install --id=Gyan.FFmpeg -e
+
+   Verify installation:
+```
+ffmpeg -version
+
+Quick MATLAB Check
+
+You can verify that MATLAB can see FFmpeg by running:
+
+[st, out] = system('ffmpeg -version'); disp(out)
+
+
+If st is 0 and you see version text, MATLAB can access ffmpeg.
+
+⚙️ Manually Add FFmpeg to PATH (if needed)
+
+Add FFmpeg to PATH so any app (including MATLAB) can find it:
+
+Start → type Environment Variables → Edit the system environment variables
+
+Click Environment Variables…
+
+Under System variables, select Path → Edit → New
+
+Add the line:
+
+C:\ffmpeg\bin
+
+
+Confirm with OK → OK
 Two MATLAB functions are used:
 
 - **`sync_videos_by_audio.m`**  
