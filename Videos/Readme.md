@@ -77,9 +77,9 @@ If st is 0 and you see version text, MATLAB can access ffmpeg.
 
 5. **Add FFmpeg to PATH so any app (including MATLAB) can find it:** (if needed)
 
-   - Start → type Environment Variables → Edit the system environment variables\
+   - Start → type Environment Variables → Edit the system environment variables
 
-   - Click Environment Variables…<br/> 
+   - Click Environment Variables…
 
    - Under System variables, select Path → Edit → New
 
@@ -87,7 +87,7 @@ If st is 0 and you see version text, MATLAB can access ffmpeg.
 
    - Confirm with OK → OK
 
-Two MATLAB functions are used:
+<ins> Two MATLAB functions are used: </ins>
 
 - **`sync_videos_by_audio.m`**  
   Performs the full synchronisation pipeline described above.  
