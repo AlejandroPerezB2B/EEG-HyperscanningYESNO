@@ -147,21 +147,20 @@ After running the synchronisation wrapper:
 - **`DyadXX-A_sync.mp4` / `DyadXX-B_sync.mp4`**  
   Aligned video files with identical start times.
 
-- **`DyadXX-A_sync_log.mat` / `DyadXX-B_sync_log.mat`**  
-  MATLAB structures containing metadata such as:
-  - `lag_seconds`: Estimated temporal offset (positive = B lags A).  
+- **`DyadXX_sync_log.mat`** 
+  MATLAB structure containing metadata such as:
+  - `lag_seconds`: Estimated temporal offset (positive = B lags A).
+  - `fs_target`: Audio sampling rate used for lag estimation. 
   - `strategy`: Whether the alignment was achieved by trimming or padding.  
-  - `duration_out`: Duration of each output video (seconds).  
-  - `fs_target`: Audio sampling rate used for lag estimation.  
+  - `duration_out`: Duration of each output video (seconds).
+  - `video_fps`: frames per second
   - `notes`: Short description of conventions used.
-
-These files ensure reproducibility and allow further verification of synchronisation accuracy.
 
 ---
 
 ## Reproducibility Notes
-- The synchronisation was performed using MATLAB R2025a and the built-in `VideoReader`, `VideoWriter`, and `audioread` functions.  
-- The `TargetFs` parameter was set to **16,000 Hz**, although the native sample rate of the recordings was 44,100, to reduce the computational time while keeping the temporal precision.  
+- The synchronisation was performed using MATLAB R2026a and the built-in `VideoReader`, `VideoWriter`, and `audioread` functions.  
+- The `TargetFs` parameter was set to **41,000 Hz**, the native sample rate of the recordings, for keeping the temporal precision.  
 - All parameters are configurable in the wrapper script.
 
 ---
