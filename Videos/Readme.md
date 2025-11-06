@@ -58,19 +58,18 @@ This step corrects for the small temporal offset between the two laptops’ reco
 
 #### Implementation
 
-### 🛠️ Install FFmpeg — via `winget` (built-in package manager on Windows 11)
+##### 🛠️ Install FFmpeg — via `winget` (built-in package manager on Windows 11)
 
 1. **Open PowerShell (Admin)**  
 2. **Run:**
    ```powershell
    winget install --id=Gyan.FFmpeg -e
 
-   Verify installation:
-```
+2. **Verify installation:**
+  ```powershell
 ffmpeg -version
 
 Quick MATLAB Check
-
 You can verify that MATLAB can see FFmpeg by running:
 
 [st, out] = system('ffmpeg -version'); disp(out)
