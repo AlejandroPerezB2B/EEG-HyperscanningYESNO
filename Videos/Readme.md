@@ -101,40 +101,10 @@ Both scripts are included in this repository with detailed in-line documentation
 ---
 
 ## Folder Structure
-D:\HyperYESNO_videosCUT
+D:\HyperYESNO_videosCUT → Dyadxx 
+                                 → Dyadxx-A_cut → Dyadxx-A_.mp4
 
-│
-
-├── Dyad01
-
-│ ├── Dyad01-A_cut
-
-│ │ ├── Dyad01-A_.mp4
-
-│ │ ├── Dyad01-A_sync.mp4
-
-│ │ └── Dyad01-A_sync_log.mat
-
-│ └── Dyad01-B_cut
-
-│ ├── Dyad01-B_.mp4
-
-│ ├── Dyad01-B_sync.mp4
-
-│ └── Dyad01-B_sync_log.mat
-
-│
-
-├── Dyad02
-
-│ └── ...
-
-│
-
-└── Dyad35
-
-└── ...
-
+                                 → Dyadxx-B_cut → Dyadxx-A_.mp4
 
 Each dyad directory contains two subfolders (`A_cut` and `B_cut`), corresponding to the two participants.
 
