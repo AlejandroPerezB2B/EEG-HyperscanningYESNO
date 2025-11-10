@@ -101,12 +101,13 @@ Both scripts are included in this repository with detailed in-line documentation
 ---
 
 ## Folder Structure
+Each dyad directory contains two subfolders (`A_cut` and `B_cut`), corresponding to the two participants.
+
 D:\HyperYESNO_videosCUT → Dyadxx 
+
                                  → Dyadxx-A_cut → Dyadxx-A_.mp4
 
                                  → Dyadxx-B_cut → Dyadxx-A_.mp4
-
-Each dyad directory contains two subfolders (`A_cut` and `B_cut`), corresponding to the two participants.
 
 ---
 
