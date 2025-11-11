@@ -133,6 +133,143 @@ After running the synchronisation wrapper:
 - All parameters are configurable in the wrapper script.
 
 ---
+## Head Motion Tracking
+
+### 2. Create a Virtual Environment
+
+Open **PowerShell (Admin)** and run:
+
+```powershell
+python -m venv C:\dev
+envs\hyperyesno
+```
+
+Activate the environment:
+
+```powershell
+C:\dev
+envs\hyperyesno\Scripts ctivate
+```
+
+---
+
+### 3. Install Required Packages
+
+Install the necessary dependencies:
+
+```powershell
+pip install mediapipe==0.10.11 opencv-python==4.12.0 numpy scipy
+```
+
+Check that all packages were installed correctly:
+
+```powershell
+pip list
+```
+
+---
+
+### 4. Link Python to MATLAB
+
+In **MATLAB**, run:
+
+```matlab
+pyenv('Version','C:\dev
+envs\hyperyesno\Scripts\python.exe')
+```
+
+This ensures MATLAB uses the same Python environment with all dependencies.
+
+---
+
+## ⚙️ Motion Extraction Pipeline
+
+### Step 1. Single-Video Analysis
+
+Each video is processed by the Python script **`head_motion_unified.py`**, which performs the following steps:
+
+1. Loads frames using **OpenCV**.  
+2. Detects faces with **MediaPipe** and keeps only the **highest-confidence face** per frame.  
+3. Estimates **head pose** (yaw, pitch, roll, and translation vector *t⃗*).  
+4. Computes:
+   - **Bounding-box composite:** translational motion in x/y and apparent depth.  
+   - **Head-pose composite:** rotational (yaw/pitch/roll) and translational speeds.  
+5. Fuses both as a **unitary head-motion measure**:
+
+   ```math
+   Mₜ = √[(β·z(v_bbox,t))² + ((1−β)·z(v_pose,t))²]
+   ```
+
+   where β = 0.5 by default.
+
+Each analysis generates:
+
+- A `.csv` file containing framewise data.  
+- An optional `.mp4` preview showing tracked faces and pose axes.
+
+---
+
+### Step 2. MATLAB Integration
+
+MATLAB wrapper functions manage batch execution:
+
+- **`run_head_motion_unified.m`**  
+  Wrapper that calls the Python script for one participant video.
+
+- **`batch_head_motion_unified.m`**  
+  Runs the pipeline across all dyads, handling paths, logging, and error capture.
+
+- **`rerun_failed_head_motion_unified.m`**  
+  Selectively re-runs failed cases (e.g., specific `DyadXX-A/B` videos).
+
+**Example MATLAB call:**
+
+```matlab
+run_head_motion_unified('D:\HyperYESNO_videosCUT\Dyad04\Dyad04-A_cut\Dyad04-A_sync.mp4', ...
+                        'Dyad04-A_motion.csv', 'Dyad04-A_motion_preview.mp4');
+```
+
+---
+
+## 📁 Output Files
+
+For each processed video:
+
+- **`DyadXX-A_motion.csv` / `DyadXX-B_motion.csv`**  
+  Contains timestamp, bounding-box (x, y, w, h), yaw, pitch, roll, translation (tx, ty, tz), and fused movement metrics.
+
+- **`DyadXX-A_motion_preview.mp4` (optional)**  
+  Visualisation overlaying detection box and 3D head-pose axes.
+
+All outputs are saved in the same folder as the synchronised videos.
+
+---
+
+## 🧠 Interpretation
+
+The resulting **unitary head-motion signal (Mₜ)** provides a continuous measure of head movement magnitude per frame, integrating both translational and rotational components.  
+This serves as a **proxy for communicative engagement** and can be used for **within- and between-participant synchrony analyses** across dyads.
+
+---
+
+## 🧾 Reproducibility Notes
+
+- **Python version:** 3.11 (virtual environment executed from MATLAB R2025a)  
+- **Packages:** `mediapipe 0.10.11`, `opencv-python 4.12.0`, `numpy`, `scipy`  
+- **Frame rate:** 30 fps  
+- **Resolution:** 1920 × 1080 px  
+- **Face selection:** Only the face with the highest detection confidence is tracked per frame  
+- **Parameters:** All parameter values (`β`, smoothing window, weighting coefficients) are configurable in the MATLAB wrappers
+
+---
+
+## 📚 References
+
+based on open-source frameworks:
+
+- Lugaresi, C., et al. (2019). *MediaPipe: A Framework for Building Perception Pipelines.*  
+- Bradski, G. (2000). *The OpenCV Library.* *Dr. Dobb’s Journal of Software Tools.*  
+- Baltrušaitis, T., Robinson, P., & Morency, L.-P. (2016). *OpenFace: An open source facial behavior analysis toolkit.* IEEE Winter Conference on Applications of Computer Vision (WACV).
 
 ---
 
