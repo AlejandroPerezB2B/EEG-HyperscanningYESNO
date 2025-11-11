@@ -148,7 +148,7 @@ Activate the environment:
 
 ```powershell
 C:\dev
-envs\hyperyesno\Scripts asctivate
+envs\hyperyesno\Scripts activate
 ```
 
 ---
