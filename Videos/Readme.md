@@ -135,7 +135,7 @@ After running the synchronisation wrapper:
 ---
 ## Head Motion Tracking
 
-### 2. Create a Virtual Environment
+### 1. Create a Virtual Environment in Python
 
 Open **PowerShell (Admin)** and run:
 
@@ -153,7 +153,7 @@ envs\hyperyesno\Scripts activate
 
 ---
 
-### 3. Install Required Packages
+### 2. Install Required Packages
 
 Install the necessary dependencies:
 
@@ -169,7 +169,7 @@ pip list
 
 ---
 
-### 4. Link Python to MATLAB
+### 3. Link Python to MATLAB
 
 In **MATLAB**, run:
 
@@ -214,7 +214,7 @@ Each analysis generates:
 MATLAB wrapper functions manage batch execution:
 
 - **`run_head_motion_unified.m`**  
-  Wrapper that calls the Python script for one participant video.
+  Wrapper that calls the Python script for one participant's video.
 
 - **`batch_head_motion_unified.m`**  
   Runs the pipeline across all dyads, handling paths, logging, and error capture.
