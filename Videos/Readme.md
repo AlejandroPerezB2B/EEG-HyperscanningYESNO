@@ -1,4 +1,4 @@
-# Video Processing and Synchronisation Pipeline
+# Video Processing Pipeline
 
 ## Overview
 This repository contains the code and documentation for the preprocessing of dyadic video recordings collected for the **HyperYESNO** project.  
@@ -36,7 +36,7 @@ Further details of the task and behavioural protocol are described elsewhere in 
 
 ---
 
-## Preprocessing Pipeline
+## Pre-processing Steps for Synchronisation between the two videos of the Dyad
 
 ### 1. Manual Trimming
 Raw recordings were **manually trimmed** using *CapCut* video editor to remove:
