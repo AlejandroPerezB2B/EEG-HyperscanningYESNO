@@ -66,5 +66,128 @@ We back-project the non-eye ICs to obtain an “eye-clean” continuous dataset,
 (ASR cites here)
 Remember to report in the paper the number of windows repaired and the parameters used in the ASR.
 
+## Lagged dyadic Gaussian-copula mutual information
 
+### `lagged_gcmi_dyad`
+
+The `lagged_gcmi_dyad` function calculates lagged Gaussian-copula mutual information (GCMI) between every EEG channel in participant A and every EEG channel in participant B.
+
+The function operates on paired epoched data:
+
+```matlab
+dataA   % channels × samples × trials
+dataB   % channels × samples × trials
+srate   % sampling rate in Hz
+```
+
+Trial `k` in participant A must correspond to trial `k` in participant B.
+
+### Analysis procedure
+
+For each EEG channel, the default two-dimensional representation contains:
+
+```text
+EEG signal + temporal gradient
+```
+
+The gradient is calculated separately within each epoch, preventing artificial derivatives between consecutive trials.
+
+The function then:
+
+1. concatenates the selected epochs and applies `copnorm`;
+2. restores the epoched structure;
+3. aligns the two participants at each requested lag;
+4. uses the same number of samples at every lag;
+5. pools the valid samples across trials;
+6. calculates the complete `channels A × channels B` GCMI matrix;
+7. creates paired-trial permutation surrogates by deranging the trial order of participant B.
+
+The same surrogate permutation is applied to all channels, preserving the complete spatial and temporal structure within each participant while destroying the original trial-to-trial dyadic correspondence.
+
+### Lag convention
+
+```text
+Negative lag: participant A precedes participant B
+Positive lag: participant B precedes participant A
+Zero lag:     simultaneous activity
+```
+
+The default requested lag range is:
+
+```matlab
+-500:50:500  % milliseconds
+```
+
+Requested lags are converted to the nearest integer number of samples. The function stores both the requested and the actual lag values.
+
+### Example
+
+```matlab
+results = lagged_gcmi_dyad( ...
+    EEG_A.data, ...
+    EEG_B.data, ...
+    EEG_A.srate, ...
+    'LagsMs', -500:50:500, ...
+    'NumSurrogates', 19, ...
+    'RandomSeed', 1, ...
+    'ChannelLabelsA', {EEG_A.chanlocs.labels}, ...
+    'ChannelLabelsB', {EEG_B.chanlocs.labels}, ...
+    'UseParallel', false, ...
+    'OutputFile', 'dyad_lagged_gcmi.mat');
+```
+
+### Main outputs
+
+```matlab
+results.gcmiObserved
+% channelsA × channelsB × lags
+
+results.gcmiSurrogates
+% channelsA × channelsB × lags × surrogates
+
+results.gcmiSurrogateMean
+results.gcmiSurrogateStd
+
+results.lagsSamples
+results.lagsMilliseconds
+results.requestedLagsMilliseconds
+
+results.surrogateTrialPermutations
+% trials × surrogates
+```
+
+GCMI values are expressed in bits. Surrogate means and standard deviations are descriptive outputs; the function does not automatically alter the observed GCMI values or apply statistical thresholds.
+
+### Default options
+
+```matlab
+'LagsMs',        -500:50:500
+'NumSurrogates', 19
+'RandomSeed',    1
+'UseParallel',   false
+'OutputFile',    ''
+'Verbose',       true
+```
+
+### External dependency
+
+The only external function required is:
+
+```text
+copnorm.m
+```
+
+Place `copnorm.m` in the same folder as `lagged_gcmi_dyad.m`, or add Robin Ince's GCMI toolbox to the MATLAB path.
+
+The two-dimensional Gaussian MI calculation and finite-sample bias correction are implemented locally in vectorised form. No separate calls to `mi_gg` are required.
+
+### Important assumptions
+
+- The data must already be filtered into the frequency band of interest.
+- Only the EEG channels intended for analysis should be provided.
+- Both participants must have the same number of samples per epoch.
+- Both participants must have the same number of paired trials.
+- Epoch boundaries are respected during lagging.
+- A constant number of observations is used at every lag.
+- The function calculates only cross-participant connectivity; within-brain connectivity is not calculated.
 
