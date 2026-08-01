@@ -52,6 +52,18 @@ The PREP pipeline was used to: high-pass filter data at 1 Hz, detect bad channel
 (https://www.frontiersin.org/articles/10.3389/fninf.2015.00016/full)
 Remember to report in the paper how many channel removals were done.
 
+### PREP bad-channel summary
+
+`step2_summarise_PREP_bad_channels.m` scans all HyperYESNO PREP datasets and extracts the channels detected as bad, interpolated, removed, or still noisy.
+
+#### Outputs
+
+- Participant-level summary
+- Channel-frequency summary
+- Channel indices and labels
+- Descriptive statistics
+- Results saved as `.xlsx` and `.mat` files
+
 ## Step3_loader_doing_ICA_ASR
 
 ### Dependencies
