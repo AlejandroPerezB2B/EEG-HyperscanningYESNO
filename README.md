@@ -220,3 +220,150 @@ The two-dimensional Gaussian MI calculation and finite-sample bias correction ar
 - A constant number of observations is used at every lag.
 - The function calculates only cross-participant connectivity; within-brain connectivity is not calculated.
 
+
+  ### Step 5: Continuous LCMV source reconstruction
+
+`step5_source_LCMV_continuous_HyperYESNO.m` reconstructs continuous source-level signals for the HyperYESNO dyads while preserving the experimental event markers for later epoching and lagged GCMI analyses.
+
+#### Input
+
+The function loads the cleaned sensor-level datasets:
+
+- `DyadXX-A_PREP_ASR_ICA_EYE70.set`
+- `DyadXX-B_PREP_ASR_ICA_EYE70.set`
+
+from the corresponding `SubjA` and `SubjB` folders.
+
+#### Processing
+
+For each participant, the function:
+
+1. verifies that participants A and B have the same sampling rate, number of samples, and event latencies;
+2. resamples synchronized copies to 100 Hz by default;
+3. uses the corrected explicit MNI DIPFIT coregistration;
+4. calculates the Colin27 leadfield with the Desikan–Killiany atlas;
+5. estimates an LCMV spatial filter using the ROIconnect/Stefan Haufe `lcmv.m` implementation;
+6. retains the three source orientations returned when `onedim = 0`;
+7. estimates the first PCA direction within each selected anatomical ROI;
+8. combines the LCMV and PCA filters into one sensor-to-ROI projection;
+9. applies the projection to the complete continuous recording in memory-efficient blocks; and
+10. verifies that the event types and event latencies remain unchanged.
+
+The LCMV filter is returned as:
+
+```matlab
+channels × source_vertices × 3_orientations
+```
+
+For the current HyperYESNO data and Colin27 source model, the expected dimensions are normally:
+
+```matlab
+62 × 5003 × 3
+```
+
+The function explicitly reshapes this array to:
+
+```matlab
+62 × 15009
+```
+
+before selecting the three orientation columns belonging to each ROI vertex.
+
+#### Source network
+
+The output contains one continuous signal for each of 20 bilateral regions:
+
+- pars opercularis;
+- pars triangularis;
+- superior temporal cortex;
+- middle temporal cortex;
+- transverse temporal cortex;
+- supramarginal cortex;
+- inferior parietal cortex;
+- precentral cortex;
+- rostral middle frontal cortex; and
+- precuneus.
+
+#### Output
+
+The continuous ROI-level datasets are saved as:
+
+- `DyadXX-A_PREP_ASR_ICA_EYE70_LCMV_COMM20.set`
+- `DyadXX-B_PREP_ASR_ICA_EYE70_LCMV_COMM20.set`
+
+The output remains a continuous EEGLAB dataset:
+
+```matlab
+EEG.data      % 20 ROIs × continuous samples
+EEG.trials    % 1
+EEG.event     % preserved experimental markers
+EEG.urevent   % preserved original-event structure
+EEG.srate     % 100 Hz by default
+```
+
+ICA and DIPFIT fields from the sensor-level dataset are removed from the active ROI dataset because they no longer describe the 20 source signals. The relevant sensor-level information and source-reconstruction parameters are retained as provenance in:
+
+```matlab
+EEG.etc.sensor_level_provenance
+EEG.etc.source_reconstruction
+EEG.roi
+```
+
+#### Requirements
+
+- EEGLAB
+- DIPFIT
+- ROIconnect, specifically its `lcmv.m` function
+- FieldTrip or FieldTrip-lite
+- MATLAB Signal Processing Toolbox
+
+The GCMI toolbox is not required for this step. Lagged GCMI will be calculated later, after the continuous source datasets have been epoched using the experimental markers.
+
+#### Usage
+
+Test one dyad:
+
+```matlab
+eeglab;
+close;
+
+summaryTable = step5_source_LCMV_continuous_HyperYESNO( ...
+    'E:\EEG_data_HyperYESNO', ...
+    1);
+```
+
+Process all dyads:
+
+```matlab
+summaryTable = step5_source_LCMV_continuous_HyperYESNO( ...
+    'E:\EEG_data_HyperYESNO', ...
+    1:35, ...
+    'MakeQCFigures', false);
+```
+
+Overwrite an existing test output:
+
+```matlab
+summaryTable = step5_source_LCMV_continuous_HyperYESNO( ...
+    'E:\EEG_data_HyperYESNO', ...
+    1, ...
+    'OverwriteExisting', true);
+```
+
+#### Quality control
+
+The function creates:
+
+- `Step5_LCMV_COMM20_continuous_summary.xlsx`
+- `Step5_LCMV_COMM20_continuous_summary.mat`
+
+Important checks include:
+
+- `MarkersPreserved = true`;
+- `NROIs = 20`;
+- `SourceFinitePercent` close to 100%;
+- `NNearZeroVarianceROIs = 0`;
+- `SourceRank` close to 20;
+- reasonable first-PC variance explained within each ROI; and
+- inspection of the saved ROI-correlation matrices for excessive source redundancy or leakage.
+
