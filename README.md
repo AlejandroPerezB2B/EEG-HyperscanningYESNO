@@ -367,3 +367,85 @@ Important checks include:
 - reasonable first-PC variance explained within each ROI; and
 - inspection of the saved ROI-correlation matrices for excessive source redundancy or leakage.
 
+### Step 6: Matched role-normalized epoching for lagged GCMI
+
+`step6_epoch_GCMI_HyperYESNO.m` epochs the continuous source-level HyperYESNO datasets and creates matched Knower–Guesser dataset pairs for the subsequent lagged GCMI analysis.
+
+The function reorganizes the data according to the experimental role of each participant rather than only according to the original `SubjA` and `SubjB` recording folders. This ensures that the later GCMI analysis can always load the Knower dataset first and the Guesser dataset second.
+
+#### Input
+
+By default, the function loads the continuous source-level datasets produced during Step 5:
+
+- `DyadXX-A_PREP_ASR_ICA_EYE70_LCMV_COMM20.set`
+- `DyadXX-B_PREP_ASR_ICA_EYE70_LCMV_COMM20.set`
+
+The participant identity corresponds to the folder structure:
+
+- participant A: `DyadXX/SubjA`
+- participant B: `DyadXX/SubjB`
+
+The input datasets must be continuous and must contain the original synchronized experimental event markers.
+
+#### Experimental markers
+
+The function processes four experimental situations:
+
+| Marker | Condition | Knower | Guesser |
+|---|---|---|---|
+| `YES_AKnower` | YES | Participant A | Participant B |
+| `NO_AKnower` | NO | Participant A | Participant B |
+| `YES_BKnower` | YES | Participant B | Participant A |
+| `NO_BKnower` | NO | Participant B | Participant A |
+
+When participant A is the Knower, participant B is automatically assigned the Guesser role. When participant B is the Knower, participant A is assigned the Guesser role.
+
+#### Processing
+
+For each dyad, the function:
+
+1. loads the continuous source-level datasets for participants A and B;
+2. verifies that both recordings have:
+   - the same sampling rate;
+   - the same number of samples;
+   - the same number and order of events;
+   - identical event types;
+   - identical event latencies;
+   - the same ROI labels;
+3. optionally filters the continuous ROI signals before epoching;
+4. identifies the events corresponding to each of the four experimental situations;
+5. determines a common set of valid marker latencies;
+6. excludes observations when the requested epoch:
+   - begins before the start of the recording;
+   - finishes after the end of the recording; or
+   - crosses an EEGLAB `boundary` event;
+7. applies the same valid marker list to participants A and B;
+8. creates matched epochs for the Knower and Guesser;
+9. optionally applies baseline correction;
+10. assigns a unique matched `pair_id` to every Knower–Guesser trial;
+11. verifies that the Knower and Guesser files contain the same:
+    - number of epochs;
+    - sampling rate;
+    - samples per epoch;
+    - epoch time vector;
+    - trial order;
+    - pair IDs;
+    - original marker latencies; and
+12. saves the outputs using role-normalized filenames.
+
+If an observation is invalid for either member of the dyad, it is excluded from both datasets.
+
+#### Output structure
+
+The function creates a `GCMI_Epochs` folder inside each dyad directory:
+
+```text
+DyadXX
+├── SubjA
+├── SubjB
+└── GCMI_Epochs
+    ├── YES_AKnower
+    ├── NO_AKnower
+    ├── YES_BKnower
+    └── NO_BKnower
+
