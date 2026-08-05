@@ -273,4 +273,76 @@ based on open-source frameworks:
 
 ---
 
-*Last updated: November 2025*
+# Head-Movement Analysis Pipeline
+
+The following pipeline extracts quantitative head-movement dynamics from naturalistic video recordings. The combination of MediaPipe and OpenCV supports cross-platform stability and real-time feasibility. The z-score fusion of translational and rotational components provides a unitary behavioural signal that can be interpreted as head-motion magnitude.
+
+## Software and dependencies
+
+All analyses were implemented in Python 3.11 and executed from MATLAB R2025a using the following dependencies:
+
+- `mediapipe==0.10.11`
+- `opencv-python==4.12.0`
+- `numpy`
+- `scipy`
+
+## Processing pipeline
+
+The videos were processed sequentially using the following procedure.
+
+### 1. Video input
+
+Each video, containing one participant per recording, was read using OpenCV's `VideoCapture`. The native frame rate of 30 frames per second was retained, and the video resolution was 1920 × 1080 pixels.
+
+### 2. Face detection
+
+MediaPipe's Face Detection module was used to identify visible faces in each frame. When more than one face was detected, only the detection with the highest confidence was retained.
+
+### 3. Three-dimensional landmark extraction and pose estimation
+
+MediaPipe FaceMesh was used to extract 468 facial landmarks. A subset of six canonical points—the nose tip, chin, outer eye corners, and mouth corners—was then used to estimate head rotation and translation using `cv2.solvePnP`.
+
+### 4. Bounding-box composite
+
+The bounding-box coordinates—`x`, `y`, `width`, and `height`—were used to calculate normalized face-centre positions and a logarithmic depth proxy. Framewise motion speed was defined as the weighted Euclidean norm of changes in face-centre position and estimated depth.
+
+### 5. Pose composite
+
+Framewise angular and translational speeds were derived from temporal differences in yaw, pitch, roll, and the translation vector \(\vec{t}\). A combined pose-based speed was calculated as the Euclidean norm of the angular and translational contributions.
+
+### 6. Fusion into a unitary measure
+
+The two standardized time series—bounding-box speed and pose speed—were combined as:
+
+\[
+M_t =
+\sqrt{
+\left[\beta \, z\left(v_{\mathrm{bbox},t}\right)\right]^2
++
+\left[(1-\beta)\, z\left(v_{\mathrm{pose},t}\right)\right]^2
+}
+\]
+
+where:
+
+- \(M_t\) is the fused head-motion magnitude at frame \(t\);
+- \(v_{\mathrm{bbox},t}\) is the bounding-box-based speed;
+- \(v_{\mathrm{pose},t}\) is the pose-based speed;
+- \(z(\cdot)\) denotes z-score standardization;
+- \(\beta\) controls the relative weighting of the two components.
+
+This procedure yielded one scalar estimate of head-motion magnitude per frame.
+
+### 7. Output
+
+Each analysis generated a `.csv` file containing the following frame-level variables:
+
+- timestamp;
+- bounding-box coordinates;
+- yaw, pitch, and roll;
+- pose vectors;
+- bounding-box motion speed;
+- pose-based motion speed;
+- fused head-motion metrics.
+
+Optionally, a visual `.mp4` preview was generated with the face bounding box and three-dimensional pose axes overlaid on the original video.
