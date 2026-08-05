@@ -700,30 +700,68 @@ This value is recorded separately for every dyad and experimental situation.
 
 #### Surrogate calculations
 
-Paired-trial permutation surrogates are calculated by randomly rearranging the Guesser trial order while leaving the Knower trial order unchanged.
-
-The permutation is a derangement:
+Surrogates are created independently within each dyad and each of the four experimental situations:
 
 ```text
-No Guesser trial remains paired with its original Knower trial.
+YES_AKnower
+NO_AKnower
+YES_BKnower
+NO_BKnower
 ```
 
-The same permutation is applied to:
+Within a situation, the Knower trial order remains fixed and the Guesser trial order is rearranged. Each rearrangement is a derangement:
 
-- every Guesser ROI;
-- the signal dimension;
-- the temporal-gradient dimension; and
-- all samples within each epoch.
+```text
+No Guesser epoch remains paired with its original Knower epoch.
+```
 
-This preserves the complete within-person structure of every trial while destroying the original Knower–Guesser trial correspondence.
+The same permutation is applied to every Guesser ROI, the signal and temporal-gradient dimensions, and all samples within each epoch. The procedure therefore preserves each participant's within-trial spatial and temporal structure while disrupting the original Knower–Guesser trial correspondence.
 
-The default number of surrogates is:
+`NumSurrogates` is interpreted as the requested maximum number of surrogates:
 
 ```matlab
-'NumSurrogates', 19
+'NumSurrogates', 499
 ```
 
-Nineteen surrogates permit a minimum attainable one-sided Monte Carlo p-value of 0.05. More surrogates can be requested later for a more stable null distribution.
+The updated generator retains only unique permutations. The actual number of surrogates is adapted to the number of paired trials available in that specific dyad and situation:
+
+```text
+actual number = min(requested number, possible unique derangements)
+```
+
+For small trial counts, the complete derangement space is limited:
+
+| Paired trials | Possible unique derangements |
+|---:|---:|
+| 2 | 1 |
+| 3 | 2 |
+| 4 | 9 |
+| 5 | 44 |
+| 6 | 265 |
+| 7 | 1,854 |
+| 8 | 14,833 |
+
+Thus, when 499 surrogates are requested for a situation containing six trials, the function generates all 265 possible unique derangements rather than repeating permutations. With seven or more trials, 499 unique derangements can normally be sampled.
+
+For small derangement spaces, all possible permutations are enumerated and sampled without replacement. For larger spaces, random derangements are generated while previously used permutations are tracked and rejected. A final validation confirms that no permutation contains a fixed point and that no two retained permutations are identical.
+
+The following metadata document the procedure:
+
+```matlab
+results.numberOfSurrogatesRequested
+results.numberOfSurrogatesGenerated
+results.maximumUniqueDerangements
+results.maximumUniqueDerangementsKnown
+results.maximumUniqueDerangementsDisplay
+results.allUniqueDerangementsUsed
+results.surrogateGenerationMode
+results.duplicateSurrogatePermutationsPrevented
+results.surrogateGenerationAttempts
+```
+
+When the total number of possible derangements is larger than the requested number, the exact maximum is not calculated unnecessarily. In that case, `maximumUniqueDerangements` is `NaN`, `maximumUniqueDerangementsKnown` is `false`, and `maximumUniqueDerangementsDisplay` reports that the available number exceeds the requested value.
+
+The surrogate distributions remain condition-specific: YES and NO epochs are never mixed, and A-Knower and B-Knower configurations are never combined during surrogate generation.
 
 #### Vectorized calculation and runtime
 
@@ -731,18 +769,18 @@ The function does not call a separate GCMI calculation for each of the 400 ROI p
 
 Instead, all ROI-pair combinations are calculated simultaneously using vectorized matrix operations. Copula normalization and temporal-gradient calculation are performed once per situation and reused across the observed calculation and all surrogate permutations.
 
-For one situation with 21 lags and 19 surrogates, the function calculates:
+For one situation with 21 lags and 499 generated surrogates, the function calculates:
 
 ```text
-21 × (1 observed + 19 surrogates)
-= 420 complete 20 × 20 matrices
+21 × (1 observed + 499 surrogates)
+= 10,500 complete 20 × 20 matrices
 ```
 
 For all four situations:
 
 ```text
-4 × 420
-= 1680 complete 20 × 20 matrices
+4 × 10,500
+= 42,000 complete 20 × 20 matrices
 ```
 
 Despite this number of matrices, the calculation can be relatively fast because the channel-pair computations are vectorized and MATLAB matrix operations may use multithreaded numerical libraries even when explicit parallel processing is disabled.
@@ -830,10 +868,19 @@ results.channelLabelsA
 results.channelLabelsB
 ```
 
-The surrogate trial permutations are stored in:
+The unique surrogate trial permutations and their generation metadata are stored in:
 
 ```matlab
 results.surrogateTrialPermutations
+results.numberOfSurrogatesRequested
+results.numberOfSurrogatesGenerated
+results.maximumUniqueDerangements
+results.maximumUniqueDerangementsKnown
+results.maximumUniqueDerangementsDisplay
+results.allUniqueDerangementsUsed
+results.surrogateGenerationMode
+results.duplicateSurrogatePermutationsPrevented
+results.surrogateGenerationAttempts
 ```
 
 #### HyperYESNO metadata
@@ -864,6 +911,14 @@ results.hyperyesno.requestedLagsMilliseconds
 results.hyperyesno.expectedLagSamplesFromSamplingRate
 results.hyperyesno.lagConvention
 results.hyperyesno.roleOrdering
+results.hyperyesno.requestedNumSurrogates
+results.hyperyesno.actualNumSurrogates
+results.hyperyesno.maximumUniqueDerangements
+results.hyperyesno.maximumUniqueDerangementsKnown
+results.hyperyesno.maximumUniqueDerangementsDisplay
+results.hyperyesno.allUniqueDerangementsUsed
+results.hyperyesno.surrogateGenerationMode
+results.hyperyesno.duplicateSurrogatePermutationsPrevented
 ```
 
 The expected values include:
@@ -910,7 +965,9 @@ The table includes:
 - requested lag range;
 - actual sample offsets;
 - actual lag values;
-- number of surrogates;
+- requested and actually generated numbers of unique surrogates;
+- maximum available derangements when known;
+- surrogate-generation mode;
 - result-file location;
 - processing status; and
 - elapsed calculation time.
@@ -938,7 +995,7 @@ close;
     'NumSurrogates', 0);
 ```
 
-Test one dyad and one situation with 19 surrogates:
+Test one dyad and one situation with up to 499 unique surrogates:
 
 ```matlab
 [summaryTable, trialCountTable] = ...
@@ -946,7 +1003,7 @@ Test one dyad and one situation with 19 surrogates:
     'E:\EEG_data_HyperYESNO', ...
     1, ...
     'Situations', 'YES_AKnower', ...
-    'NumSurrogates', 19, ...
+    'NumSurrogates', 499, ...
     'OverwriteExisting', true);
 ```
 
@@ -957,7 +1014,7 @@ Run all four situations for one dyad:
     step7_run_lagged_GCMI_HyperYESNO( ...
     'E:\EEG_data_HyperYESNO', ...
     1, ...
-    'NumSurrogates', 19);
+    'NumSurrogates', 499);
 ```
 
 Run selected situations:
@@ -979,7 +1036,7 @@ Enable parallel processing:
     step7_run_lagged_GCMI_HyperYESNO( ...
     'E:\EEG_data_HyperYESNO', ...
     1, ...
-    'NumSurrogates', 19, ...
+    'NumSurrogates', 499, ...
     'UseParallel', true);
 ```
 
@@ -990,8 +1047,9 @@ Process all dyads:
     step7_run_lagged_GCMI_HyperYESNO( ...
     'E:\EEG_data_HyperYESNO', ...
     1:35, ...
-    'NumSurrogates', 19, ...
-    'UseParallel', false);
+    'NumSurrogates', 499, ...
+    'UseParallel', false, ...
+    'OverwriteExisting', true);
 ```
 
 Overwrite previously created result files:
@@ -1001,7 +1059,7 @@ Overwrite previously created result files:
     step7_run_lagged_GCMI_HyperYESNO( ...
     'E:\EEG_data_HyperYESNO', ...
     1, ...
-    'NumSurrogates', 19, ...
+    'NumSurrogates', 499, ...
     'OverwriteExisting', true);
 ```
 
