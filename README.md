@@ -12,8 +12,6 @@ Participants completed a dyadic yes/no guessing task/game similar to the Hedbanz
 
 <p align="left"><strong>Figure 1.</strong> HyperYESNO experimental setup.</p>
 
-<img src="Picture_of _experimental_EEG_hyperscanning_setup.jpg" alt="HyperYESNO experimental setup" width="600">
-
 Stimuli were 32 target words drawn from four superordinate categories: Animals, Professions, Meals, and Objects. The "Guesser" received information about the category corresponding to the turn. Example items included dog, horse, lion (Animals); doctor, teacher, pilot (Professions); pizza, sushi, cake (Meals); and laptop, toothbrush, chair (Objects). In the case of the broader Object category, an additional hint was provided (e.g., "transport" for Object "car"). The presentation order of the target words was identical for all dyads. Each round lasted 60 seconds maximum. However, if a round concluded before (i.e., a correct guess), participants could advance immediately to the subsequent trial. Both partners shared control of the presentation to proceed and could advance the trial when ready (self-paced). The file "PowerPointHyperYESNO_Clean.pptx" is the presentation used.
 
 Before the main task, participants completed two practice trials to familiarise themselves with the procedure and response pad. Sessions were also video-recorded with the laptops' front cameras. Participants were asked to keep their gaze on the screen and remain within the camera frame during the entire experiment. We also asked participants to fill out an "Interaction Rating Scale" (included here) at the end of the experiment.
