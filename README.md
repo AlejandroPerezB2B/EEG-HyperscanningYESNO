@@ -55,19 +55,16 @@ else → unknow
 ```
 Also collapses consecutive `BlockStart`, renumbers `urevent`, warns if `>32` blocks.
 
-## Step2_loader_doingPREP
+## Step2_loader_doingPREP.m
 
 ### Dependencies
 - **PrepPipeline0.57.0** plugin
 
 ### Workflow
 The PREP pipeline was used to: high-pass filter data at 1 Hz, detect bad channels, perform a robust average reference, and interpolate bad data.
-(https://www.frontiersin.org/articles/10.3389/fninf.2015.00016/full)
-Remember to report in the paper how many channel removals were done.
 
-### PREP bad-channel summary
-
-`step2_summarise_PREP_bad_channels.m` scans all HyperYESNO PREP datasets and extracts the channels detected as bad, interpolated, removed, or still noisy.
+### step2_summarise_PREP_bad_channels.m
+Use it to scan all HyperYESNO PREP datasets and extract the channels detected as bad, interpolated, removed, or still noisy.
 
 #### Outputs
 
@@ -77,20 +74,65 @@ Remember to report in the paper how many channel removals were done.
 - Descriptive statistics
 - Results saved as `.xlsx` and `.mat` files
 
-## Step3_loader_doing_ICA_ASR
+## step3_loader_doing_ASR_ICA.m
 
-### Dependencies
-- **ICLabel1.7**
-- **Viewprops1.5.4**
-- **clean_rawdata2.11**
-- 
-First, we used ICA (extended Infomax) specifically to identify eye movements on the recordings.
-Then, we classified components using ICLabel; we removed only those with a high probability (>90%) of corresponding to blinks/saccades.
-(ICLabel: Pion-Tonachini et al., NeuroImage 2019 — https://doi.org/10.1016/j.neuroimage.2019.05.026)
-We back-project the non-eye ICs to obtain an “eye-clean” continuous dataset, which was submitted to ASR (clean_rawdata) to catch bursts/motion/muscle transients.
-(ASR cites here)
-Remember to report in the paper the number of windows repaired and the parameters used in the ASR.
+The following EEGLAB plugins must also be installed:
 
+- **clean_rawdata** — used for Artifact Subspace Reconstruction (ASR)
+- **Picard** — used to perform ICA
+- **DIPFIT** — used for electrode coregistration and dipole fitting
+- **ICLabel** — used to classify the independent components
+
+### Main processing steps
+
+1. Load the `_PREP.set` files for participants A and B.
+2. Apply ASR independently to each participant.
+3. Identify residual noisy time intervals.
+4. Remove the union of rejected intervals from both participants.
+5. Preserve the exact temporal synchronisation between participants.
+6. Estimate the effective rank of each dataset.
+7. Run Picard ICA using PCA rank reduction.
+8. Coregister the electrode locations with the standard MNI head model.
+9. Fit one equivalent dipole to each independent component using DIPFIT.
+10. Classify the independent components using ICLabel.
+
+### Output EEG files
+
+The processed EEG datasets are saved as:
+
+```text
+DyadXX-A_PREP_ASR_ICA.set
+DyadXX-B_PREP_ASR_ICA.set
+```
+
+### Summary files
+
+The function creates a summary table containing information about:
+
+- Samples rejected by ASR
+- Percentage of data removed
+- Number of interpolated channels
+- Numerical and effective ICA rank
+- Number of ICA components
+- ICA, DIPFIT, and ICLabel processing times
+- Processing status and errors
+
+The summary table is saved as:
+
+```text
+Step3_ASR_ICA_summary.xlsx
+Step3_ASR_ICA_summary.mat
+```
+
+### Example
+
+```matlab
+eeglab;
+close;
+
+summaryTable = step3_loader_doing_ASR_ICA( ...
+    'E:\EEG_data_HyperYESNO', 1:35);
+```
 
 ## Step 3: Dyad-synchronised ASR, ICA, DIPFIT, and ICLabel
 
