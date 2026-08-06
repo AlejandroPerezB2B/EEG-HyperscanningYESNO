@@ -16,7 +16,8 @@ C:\Users\<user_name>\AppData\Roaming\Neuroscan\Curry 7\Acquisition\DeviceConfigu
 Curry 7 cannot separate channels of two headboxes into different groups (unlike Curry 9), so they'd have to separate the data in post-processing.
 The impedance check will work for both headboxes simultaneously. However, the location of the little impedance windows will not be nicely separated, so values from both caps will be displayed intertwined (unlike in Curry 9).
 
-Screenshot showing an example of how the configuration could look in Curry. The idea is to use the same labels on both headboxes, but append "-2" to the labels on the second headbox.
+Below, there is a screenshot showing an example of how the configuration could look in Curry. The idea is to use the same labels on both headboxes, but append "-2" to the labels on the second headbox.
+
 <img src="Acquisition configuration in Curry.png" alt="HyperYESNO experimental setup" width="450">
 
 
