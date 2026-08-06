@@ -134,22 +134,6 @@ summaryTable = step3_loader_doing_ASR_ICA( ...
     'E:\EEG_data_HyperYESNO', 1:35);
 ```
 
-## step3_loader_doing_ASR_ICA.m
-
-Loads the exact `_PREP.set` datasets for both members of each dyad and applies ASR independently to participants A and B. ASR is configured to reconstruct burst-contaminated data using a conservative `BurstCriterion` of `20`. Residual windows that remain incompletely repaired are detected using `WindowCriterion = 0.30` and `WindowCriterionTolerances = [-Inf 7]`.
-
-To preserve hyperscanning synchronisation, the union of the residual windows rejected for A and B is removed from both recordings. Therefore, both participants always retain exactly the same samples.
-
-The function then estimates the effective data rank from the numerical rank, average reference, and PREP-interpolated channels; runs extended Infomax ICA with PCA rank reduction; fits one dipole per component using the standard MNI BEM model in DIPFIT; and runs ICLabel. Components are classified but are not automatically removed.
-
-Final datasets are saved as:
-
-- `DyadXX-A_PREP_ASR_ICA.set`
-- `DyadXX-B_PREP_ASR_ICA.set`
-
-The function also deletes the obsolete files named exactly `DyadXX-A_ICA.set` and `DyadXX-B_ICA.set`, together with their paired `.fdt` files.\
-A processing summary is saved as `Step3_ASR_ICA_summary.xlsx` and `Step3_ASR_ICA_summary.mat`.
-
 ## step4_remove_eye_ICs_HyperYESNO.m
 
 Automatically removes independent components classified by **ICLabel** as eye-related artifacts.
@@ -263,6 +247,95 @@ summaryTable = step5_source_LCMV_continuous_HyperYESNO( ...
     'MakeQCFigures', false);
 ```
 
+## step6_epoch_GCMI_HyperYESNO.m
+
+Epochs the continuous source-level ROI datasets and prepares matched **Knower–Guesser** dataset pairs for later lagged-GCMI analysis.
+
+The function processes four experimental situations:
+
+- `YES_AKnower`
+- `NO_AKnower`
+- `YES_BKnower`
+- `NO_BKnower`
+
+The output files are organised by analytical role rather than participant identity. Therefore, the Knower dataset is always saved first and the Guesser dataset second.
+
+### Main processing steps
+
+1. Load the continuous `_LCMV_COMM20.set` datasets for participants A and B.
+2. Confirm that both recordings have matching samples, ROI labels, events, and event latencies.
+3. Optionally filter the continuous ROI signals before epoching.
+4. Identify valid markers for each experimental situation.
+5. Exclude epochs that extend outside the recording or cross a boundary event.
+6. Remove the same invalid epochs from both participants.
+7. Create identical trial-pair IDs for the Knower and Guesser datasets.
+8. Optionally apply baseline correction.
+9. Save the matched epoched datasets and trial-pair tables.
+
+### Default input files
+
+```text
+DyadXX/SubjA/DyadXX-A_PREP_ASR_ICA_EYE70_LCMV_COMM20.set
+DyadXX/SubjB/DyadXX-B_PREP_ASR_ICA_EYE70_LCMV_COMM20.set
+```
+
+### Output structure
+
+The outputs are saved inside:
+
+```text
+DyadXX/GCMI_Epochs/
+```
+
+For example:
+
+```text
+DyadXX/GCMI_Epochs/YES_AKnower/
+├── DyadXX_YES_AKnower_Knower_fromA.set
+├── DyadXX_YES_AKnower_Guesser_fromB.set
+└── DyadXX_YES_AKnower_trial_pairs.csv
+```
+
+Equivalent folders are created for:
+
+```text
+NO_AKnower
+YES_BKnower
+NO_BKnower
+```
+
+### Optional processing
+
+The function supports:
+
+- Continuous filtering before epoching
+- Baseline correction after epoching
+- Saving trial-pair tables
+- Overwriting existing output files
+
+Filtering is disabled by default.
+
+### Summary files
+
+The processing summary is saved in the HyperYESNO root directory as:
+
+```text
+Step6_GCMI_epoching_summary.xlsx
+Step6_GCMI_epoching_summary.mat
+```
+
+### Example
+
+```matlab
+eeglab;
+close;
+
+summaryTable = step6_epoch_GCMI_HyperYESNO( ...
+    'E:\EEG_data_HyperYESNO', ...
+    1:35, ...
+    [-2 1], ...
+    'FilterBand', [2 10]);
+```
 
 ## Lagged dyadic Gaussian-copula mutual information
 
