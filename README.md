@@ -30,4 +30,4 @@ The impedance check will work for both headboxes simultaneously. However, the lo
   <img src="Acquisition configuration in Curry.png" alt="Acquisition configuration in Curry.png" width="600">
 </p>
 
-<p align="left"><strong>Figure 2.</strong> Acquisition configuration in Curry.png.</p>
+<p align="left"><strong>Figure 2.</strong> Acquisition configuration in Curry</p>
