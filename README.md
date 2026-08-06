@@ -686,3 +686,139 @@ The Excel workbook contains:
     'E:\EEG_data_HyperYESNO', ...
     1:35);
 ```
+
+## step9_calculate_surrogate_corrected_GCMI_HyperYESNO.m
+
+Loads the validated group-level results from Step 8 and calculates surrogate-corrected lagged GCMI values.
+
+No group-level inferential statistics are performed in this step. The primary dyad-level contrast is prepared for the statistical analysis performed in Step 10.
+
+### Surrogate correction
+
+For every ROI pair, lag, dyad, and experimental situation, the corrected value is calculated as:
+
+```text
+Corrected GCMI = Observed GCMI − Mean surrogate GCMI
+```
+
+### Role-specific contrasts
+
+The function calculates two within-dyad YES–NO contrasts:
+
+```text
+A-Knower contrast =
+Corrected YES_AKnower − Corrected NO_AKnower
+```
+
+```text
+B-Knower contrast =
+Corrected YES_BKnower − Corrected NO_BKnower
+```
+
+The primary dyad-level contrast is the equally weighted average of the two role-specific contrasts:
+
+```text
+Primary contrast =
+0.5 × (A-Knower contrast + B-Knower contrast)
+```
+
+By default, the primary contrast is calculated only when both role-specific contrasts are available. Participants A and B are therefore treated as repeated observations of the Knower role, while the dyad remains the statistical unit.
+
+### Main processing steps
+
+1. Load the validated group arrays created in Step 8.
+2. Verify the dimensions, ROI labels, lag values, dyad labels, and situation labels.
+3. Subtract the mean surrogate GCMI from the observed GCMI.
+4. Exclude situations that failed Step 8 validation.
+5. Apply minimum trial and surrogate requirements.
+6. Calculate the A-Knower and B-Knower YES–NO contrasts.
+7. Calculate the primary dyad-level YES–NO contrast.
+8. Create dyad-level summary and quality-control tables.
+9. Save the corrected arrays and contrast information.
+
+### Array dimensions
+
+Situation-level arrays use:
+
+```text
+Knower ROI × Guesser ROI × Lag × Dyad × Situation
+```
+
+Contrast arrays use:
+
+```text
+Knower ROI × Guesser ROI × Lag × Dyad
+```
+
+### Lag convention
+
+- **Negative lag:** the Knower precedes the Guesser.
+- **Positive lag:** the Guesser precedes the Knower.
+
+### Main outputs
+
+The function returns:
+
+- `step9Data`: corrected GCMI arrays, contrasts, masks, and metadata
+- `dyadTable`: one row per dyad with contrast availability and trial information
+- `qcTable`: warnings and reasons for excluding situations or contrasts
+
+Important fields in `step9Data` include:
+
+- `correctedBySituation`
+- `yesMinusNoAKnower`
+- `yesMinusNoBKnower`
+- `yesMinusNoPrimary`
+- `correctedYESRoleMean`
+- `correctedNORoleMean`
+- `roleDifferenceYESminusNO`
+- `validSituationForContrast`
+- `validAKnowerContrast`
+- `validBKnowerContrast`
+- `validPrimaryContrast`
+
+### Default validity requirements
+
+A situation must contain at least:
+
+```text
+2 trials
+1 unique surrogate
+```
+
+These thresholds can be changed using:
+
+```matlab
+'MinimumTrialsPerSituation'
+'MinimumSurrogatesPerSituation'
+```
+
+### Saved files
+
+By default, the outputs are saved in:
+
+```text
+E:\EEG_data_HyperYESNO\Group_GCMI
+```
+
+The saved files are:
+
+```text
+Step9_HyperYESNO_surrogate_corrected_GCMI.mat
+Step9_HyperYESNO_surrogate_corrected_GCMI_QC.xlsx
+```
+
+The Excel workbook contains:
+
+- `DyadSummary`
+- `QC`
+- `ContrastGuide`
+- `SituationGuide`
+
+### Example
+
+```matlab
+[step9Data, dyadTable, qcTable] = ...
+    step9_calculate_surrogate_corrected_GCMI_HyperYESNO( ...
+    'E:\EEG_data_HyperYESNO');
+```
