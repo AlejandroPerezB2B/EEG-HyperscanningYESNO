@@ -53,19 +53,6 @@ calculated for the complete dyad and separately for A as Knower and B as Knower.
 
 Timing measures are also retained, but they should be interpreted cautiously because recordings may include interruptions, missing markers, or incomplete sessions.
 
----
-
-## Dependencies
-
-- MATLAB
-- EEGLAB
-- `pop_loadset`
-- `eeg_checkset`
-
-EEGLAB must be started, or added to the MATLAB path, before running the function.
-
----
-
 ## Expected folder structure
 
 ```text
