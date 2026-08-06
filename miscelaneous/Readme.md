@@ -1,6 +1,6 @@
 ## analyse_HyperYESNO_Curry_impedances.m
 
-The `` function extracts and summarises electrode impedance values from the raw CURRY recordings of the HyperYESNO dataset.
+The function extracts and summarises electrode impedance values from the raw CURRY recordings of the HyperYESNO dataset.
 
 Each CURRY acquisition contains the simultaneous recordings of one dyad. The function divides the channels into:
 
