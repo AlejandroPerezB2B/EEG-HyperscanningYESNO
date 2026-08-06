@@ -18,6 +18,15 @@ The impedance check will work for both headboxes simultaneously. However, the lo
 
 Below, there is a screenshot showing an example of how the configuration could look in Curry. The idea is to use the same labels on both headboxes, but append "-2" to the labels on the second headbox.
 
+
 <img src="Acquisition configuration in Curry.png" alt="HyperYESNO experimental setup" width="450">
 
+As shown in [Figure 1](#figure-1), the participants completed the task using separate screens.
 
+<a id="figure-1"></a>
+
+<p align="center">
+  <img src="Acquisition configuration in Curry.png" alt="Acquisition configuration in Curry.png" width="450">
+</p>
+
+<p align="center"><strong>Figure 1.</strong> Acquisition configuration in Curry.png.</p>
