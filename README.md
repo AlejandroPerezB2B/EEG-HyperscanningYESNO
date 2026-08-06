@@ -188,6 +188,82 @@ summaryTable = step4_remove_eye_ICs_HyperYESNO( ...
     'E:\EEG_data_HyperYESNO', 1:35, 0.70, false);
 ```
 
+## step5_source_LCMV_continuous_HyperYESNO.m
+
+Converts the cleaned sensor-level EEG recordings into continuous source-level signals for 20 bilateral regions of interest (**COMM20**).
+
+The following EEGLAB plugins are required:
+
+- **DIPFIT**
+- **ROIconnect**
+- **FieldTrip** or **FieldTrip-lite**
+- **MATLAB Signal Processing Toolbox**
+
+The function preserves all experimental markers so that the source-level data can be epoched later according to the HyperYESNO conditions.
+
+### Main processing steps
+
+1. Load the `_PREP_ASR_ICA_EYE70.set` datasets for participants A and B.
+2. Resample both recordings to **100 Hz** while preserving their synchronisation.
+3. Generate a distributed Colin27 leadfield.
+4. Calculate an LCMV spatial filter using ROIconnect.
+5. Extract one principal component from each anatomical ROI.
+6. Project the complete continuous EEG recording into 20 ROI signals.
+7. Verify that event markers remain unchanged and aligned between participants.
+8. Save the continuous source-level datasets.
+
+### COMM20 network
+
+The source network contains the left and right versions of the following regions:
+
+- Pars opercularis
+- Pars triangularis
+- Superior temporal cortex
+- Middle temporal cortex
+- Transverse temporal cortex
+- Supramarginal cortex
+- Inferior parietal cortex
+- Precentral cortex
+- Rostral middle frontal cortex
+- Precuneus
+
+### Output files
+
+The default source-level datasets are saved as:
+
+```text
+DyadXX-A_PREP_ASR_ICA_EYE70_LCMV_COMM20.set
+DyadXX-B_PREP_ASR_ICA_EYE70_LCMV_COMM20.set
+```
+
+Each output dataset contains:
+
+- 20 continuous ROI signals
+- Preserved experimental events
+- A default sampling rate of 100 Hz
+- ROI labels instead of scalp-channel labels
+
+The processing summary is saved as:
+
+```text
+Step5_LCMV_COMM20_continuous_summary.xlsx
+Step5_LCMV_COMM20_continuous_summary.mat
+```
+
+Optional ROI-correlation quality-control figures can also be generated for each participant.
+
+### Example
+
+```matlab
+eeglab;
+close;
+
+summaryTable = step5_source_LCMV_continuous_HyperYESNO( ...
+    'E:\EEG_data_HyperYESNO', 1:35, ...
+    'MakeQCFigures', false);
+```
+
+
 ## Lagged dyadic Gaussian-copula mutual information
 
 ### `lagged_gcmi_dyad`
