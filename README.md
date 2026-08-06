@@ -150,6 +150,43 @@ Final datasets are saved as:
 The function also deletes the obsolete files named exactly `DyadXX-A_ICA.set` and `DyadXX-B_ICA.set`, together with their paired `.fdt` files.\
 A processing summary is saved as `Step3_ASR_ICA_summary.xlsx` and `Step3_ASR_ICA_summary.mat`.
 
+## step4_remove_eye_ICs_HyperYESNO.m
+
+Automatically removes independent components classified by **ICLabel** as eye-related artifacts.
+
+By default, components are removed when their Eye probability is **greater than 0.70**. Components with a probability exactly equal to `0.70` are retained.
+
+### Main processing steps
+
+1. Load the `_PREP_ASR_ICA.set` datasets for participants A and B.
+2. Read the ICLabel classification probabilities.
+3. Identify components classified as Eye above the selected threshold.
+4. Remove these components using `pop_subcomp`.
+5. Confirm that the number of samples and event latencies remain unchanged.
+6. Save new cleaned datasets without modifying the original files.
+
+### Output files
+
+With the default threshold, the cleaned datasets are saved as:
+
+```text
+DyadXX-A_PREP_ASR_ICA_EYE70.set
+DyadXX-B_PREP_ASR_ICA_EYE70.set
+```
+
+The function also saves a participant-level summary as:
+
+```text
+Step4_ICLabel_EYE70_summary.xlsx
+Step4_ICLabel_EYE70_summary.mat
+```
+
+### Example
+
+```matlab
+summaryTable = step4_remove_eye_ICs_HyperYESNO( ...
+    'E:\EEG_data_HyperYESNO', 1:35, 0.70, false);
+```
 
 ## Lagged dyadic Gaussian-copula mutual information
 
