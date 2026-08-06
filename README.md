@@ -1,6 +1,4 @@
-# EEG-Hyperscanning-YESNO
-
-## Methods
+# Experiment EEG-Hyperscanning-YESNO
 
 ### Task and Procedure
 
@@ -8,7 +6,18 @@ Participants completed a dyadic yes/no guessing task/game similar to the Hedbanz
 
 Stimuli were 32 target words drawn from four superordinate categories: Animals, Professions, Meals, and Objects. The "Guesser" received information about the category corresponding to the turn. Example items included dog, horse, lion (Animals); doctor, teacher, pilot (Professions); pizza, sushi, cake (Meals); and laptop, toothbrush, chair (Objects). In the case of the broader Object category, an additional hint was provided (e.g., "transport" for Object "car"). The presentation order of the target words was identical for all dyads. Each round lasted 60 seconds maximum. However, if a round concluded before (i.e., a correct guess), participants could advance immediately to the subsequent trial. Both partners shared control of the presentation to proceed and could advance the trial when ready (self-paced). The file PowerPointHyperYESNO_Clean.pptx, is the presentation used.
 
-Before the main task, participants completed two practice trials to familiarise themselves with the procedure and response pad. Sessions were also video-recorded with the laptops' front cameras. Participants were asked to keep their gaze on the screen and remain within the camera frame during the entire experiment.
+Before the main task, participants completed two practice trials to familiarise themselves with the procedure and response pad. Sessions were also video-recorded with the laptops' front cameras. Participants were asked to keep their gaze on the screen and remain within the camera frame during the entire experiment. We also asked participants to fill out an ´Interaction Rating Scale´ (included here) at the end of the experiment.
+
+An EEG hyperscanning setup was implemented using two 64-channel Neuvo amplifiers from NeuroScan. The file ´SynAmpsRT - 2 subjects - Quik-Cap 64.xml´ contains the workspace used for the recording. They can copy it to:
+C:\Users\<user_name>\AppData\Roaming\Neuroscan\Curry 7\Acquisition\DeviceConfigurations
+
+The AppData folder may be hidden.
+
+The file 'Acquisition configuration in Curry.png´ is a screenshot showing an example of how the configuration could look in Curry.   
+Find attached an example configuration that they can use to record data from two subjects. The idea is to use the same labels on both headboxes, but append "-2" to the labels on the second headbox.
+
+Curry 7 cannot separate channels of two headboxes into different groups (unlike Curry 9), so they'd have to separate the data in post-processing.
+The impedance check will work for both headboxes simultaneously. However, the location of the little impedance windows will not be nicely separated, so values from both caps will be displayed intertwined (unlike in Curry 9).
 
 ## Step1_preprocessing_HyperYESNO.m
 
