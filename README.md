@@ -603,3 +603,86 @@ results = lagged_gcmi_dyad( ...
     'ChannelLabelsB', {EEG_B.chanlocs.labels}, ...
     'OutputFile', 'dyad_lagged_gcmi.mat');
 ```
+
+## step8_load_group_GCMI_HyperYESNO.m
+
+Loads, validates, and combines the lagged-GCMI results generated in Step 7.
+
+### Main processing steps
+
+1. Locate each Step 7 GCMI result file.
+2. Verify the GCMI array dimensions.
+3. Check ROI labels and their ordering.
+4. Verify the lag values and sampling rate.
+5. Check trial and surrogate metadata.
+6. Confirm that surrogate permutations are unique derangements.
+7. Exclude files that fail validation.
+8. Combine valid results into group-level arrays.
+9. Save group data and quality-control tables.
+
+### Group array structure
+
+The group-level arrays use the following dimension order:
+
+```text
+Knower ROI × Guesser ROI × Lag × Dyad × Situation
+```
+
+The default situation order is:
+
+1. `YES_AKnower`
+2. `NO_AKnower`
+3. `YES_BKnower`
+4. `NO_BKnower`
+
+### Lag convention
+
+- **Negative lag:** the Knower precedes the Guesser.
+- **Positive lag:** the Guesser precedes the Knower.
+
+### Main outputs
+
+The function returns:
+
+- `groupData`: validated group-level GCMI arrays and metadata
+- `fileTable`: one row per requested dyad and situation
+- `qcTable`: one row per detected quality-control issue
+
+The main group arrays are:
+
+- `groupData.gcmiObserved`
+- `groupData.gcmiSurrogateMean`
+- `groupData.gcmiSurrogateStd`
+- `groupData.validMask`
+
+The complete surrogate arrays are checked but are not retained in `groupData` to reduce memory use. They remain available in the original Step 7 result files.
+
+### Saved files
+
+By default, the outputs are saved in:
+
+```text
+E:\EEG_data_HyperYESNO\Group_GCMI
+```
+
+The saved files are:
+
+```text
+Step8_HyperYESNO_group_GCMI.mat
+Step8_HyperYESNO_group_GCMI_QC.xlsx
+```
+
+The Excel workbook contains:
+
+- `FileSummary`
+- `QC`
+- `ArrayGuide`
+
+### Example
+
+```matlab
+[groupData, fileTable, qcTable] = ...
+    step8_load_group_GCMI_HyperYESNO( ...
+    'E:\EEG_data_HyperYESNO', ...
+    1:35);
+```
