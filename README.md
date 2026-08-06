@@ -337,6 +337,160 @@ summaryTable = step6_epoch_GCMI_HyperYESNO( ...
     'FilterBand', [2 10]);
 ```
 
+## step7_run_lagged_GCMI_HyperYESNO.m
+
+Runs lagged Gaussian-Copula Mutual Information (**GCMI**) analysis on the matched Knower–Guesser epochs created in Step 6.
+
+The following functions are required:
+
+- `lagged_gcmi_dyad.m`
+- `copnorm.m` from Robin Ince's GCMI toolbox
+
+The **MATLAB Parallel Computing Toolbox** is required only when:
+
+```matlab
+'UseParallel', true
+```
+
+The function always provides the data to the function `lagged_gcmi_dyad.m` in the following order:
+
+```text
+dataA = Knower
+dataB = Guesser
+```
+
+This ensures consistent role ordering across all dyads and experimental situations.
+
+### Experimental situations
+
+The function can process:
+
+- `YES_AKnower`
+- `NO_AKnower`
+- `YES_BKnower`
+- `NO_BKnower`
+
+By default, all four situations are analysed.
+
+### Lag convention
+
+The lag convention is:
+
+- **Negative lag:** the Knower precedes the Guesser.
+- **Positive lag:** the Guesser precedes the Knower.
+- **Zero lag:** simultaneous Knower and Guesser activity.
+
+The default lag range is:
+
+```text
+-500:50:500 ms
+```
+
+At the default sampling rate of 100 Hz, this corresponds to:
+
+```text
+-50:5:50 samples
+```
+
+### Main processing steps
+
+1. Load the matched Knower and Guesser datasets created in Step 6.
+2. Verify that both datasets contain the same trials, ROI labels, sampling rate, epoch duration, and pair IDs.
+3. Confirm the Knower–Guesser role metadata.
+4. Verify that the input data were previously filtered between 8 and 13 Hz.
+5. Convert the requested lag values from milliseconds to samples.
+6. Run `lagged_gcmi_dyad` using all available matched trials.
+7. Generate trial-permutation surrogate data.
+8. Save the GCMI results and processing summaries.
+
+### Trial handling
+
+The function uses all available matched trials for each experimental situation.
+
+It does not:
+
+- Equalise the number of trials across conditions.
+- Subsample trials.
+- Match trial counts to the smallest condition.
+- Balance A-Knower and B-Knower situations.
+
+### Filtering
+
+This function does not filter the EEG signals.
+
+By default, it checks that the Step 6 metadata indicate that the data were previously filtered between:
+
+```text
+8–13 Hz
+```
+
+### Output files
+
+One GCMI result file is saved for each dyad and experimental situation:
+
+```text
+DyadXX/Lagged_GCMI/SITUATION/
+└── DyadXX_SITUATION_lagged_GCMI.mat
+```
+
+For example:
+
+```text
+Dyad01/Lagged_GCMI/YES_AKnower/
+└── Dyad01_YES_AKnower_lagged_GCMI.mat
+```
+
+Each result file contains:
+
+- Observed GCMI values
+- Surrogate GCMI values
+- Surrogate means and standard deviations
+- Lag values in samples and milliseconds
+- Number of trials
+- Number of observations per lag
+- HyperYESNO-specific processing metadata
+
+### Summary files
+
+The detailed processing summary is saved as:
+
+```text
+Step7_lagged_GCMI_summary.xlsx
+Step7_lagged_GCMI_summary.mat
+```
+
+The trial-count summary is saved as:
+
+```text
+Step7_GCMI_trial_counts.xlsx
+Step7_GCMI_trial_counts.mat
+```
+
+### Example
+
+Run all four situations for one dyad:
+
+```matlab
+eeglab;
+close;
+
+[summaryTable, trialCountTable] = ...
+    step7_run_lagged_GCMI_HyperYESNO( ...
+    'E:\EEG_data_HyperYESNO', ...
+    1);
+```
+
+Run the complete dataset with 499 surrogates:
+
+```matlab
+[summaryTable, trialCountTable] = ...
+    step7_run_lagged_GCMI_HyperYESNO( ...
+    'E:\EEG_data_HyperYESNO', ...
+    1:35, ...
+    'NumSurrogates', 499, ...
+    'OverwriteExisting', true);
+```
+
 ## Lagged dyadic Gaussian-copula mutual information
 
 ### `lagged_gcmi_dyad`
@@ -461,7 +615,6 @@ The two-dimensional Gaussian MI calculation and finite-sample bias correction ar
 - Epoch boundaries are respected during lagging.
 - A constant number of observations is used at every lag.
 - The function calculates only cross-participant connectivity; within-brain connectivity is not calculated.
-
 
   ### Step 5: Continuous LCMV source reconstruction
 
@@ -693,6 +846,8 @@ DyadXX
 
 
 ````markdown
+
+
 ### Step 7: Role-normalized lagged GCMI analysis
 
 `step7_run_lagged_GCMI_HyperYESNO.m` runs `lagged_gcmi_dyad.m` on the matched, role-normalized epoch files produced during Step 6.
