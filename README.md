@@ -2,7 +2,15 @@
 
 ### Task and Procedure
 
-Participants completed a dyadic yes/no guessing task/game similar to the Hedbanz board game. They were seated side by side at a shared workstation, each facing the screen of a laptop. Response pads were placed at the centre of the table, between the laptops. In each round, one participant (“Knower”) viewed a target word on the screen; the partner (“Guesser”) could not see the word and attempted to identify it by asking yes/no questions (the file "Picture of Experimental EEG hyperscannning.jpg" is a picture of the setup). Participants were instructed to ask relevant, information-seeking questions (e.g., “Does it meow?”; “Is it a pet?”) and to avoid elimination strategies based on unrelated or negated queries (e.g., “Is it not a bird?”). A printed sheet with suggested questions per category (´Question template for participants.docx´) was available as an optional aid. The Knower answered aloud and simultaneously registered each response on the response pad using role-specific keys for each participant. Button presses were sent as triggers to the EEG acquisition system. At the end of the round, the roles switched. The beginning of each turn was detected using a photodiode attached to one of the screens and also served as a trigger for the EEG.
+Participants completed a dyadic yes/no guessing task/game similar to the Hedbanz board game. They were seated side by side at a shared workstation, each facing the screen of a laptop. Response pads were placed at the centre of the table, between the laptops. In each round, one participant (“Knower”) viewed a target word on the screen; the partner (“Guesser”) could not see the word and attempted to identify it by asking yes/no questions (the [Figure 1](#figure-1) is a picture of the setup). Participants were instructed to ask relevant, information-seeking questions (e.g., “Does it meow?”; “Is it a pet?”) and to avoid elimination strategies based on unrelated or negated queries (e.g., “Is it not a bird?”). A printed sheet with suggested questions per category (´Question template for participants.docx´) was available as an optional aid. The Knower answered aloud and simultaneously registered each response on the response pad using role-specific keys for each participant. Button presses were sent as triggers to the EEG acquisition system. At the end of the round, the roles switched. The beginning of each turn was detected using a photodiode attached to one of the screens and also served as a trigger for the EEG.
+
+<a id="figure-1"></a>
+
+<p align="left">
+  <img src="Picture_of _experimental_EEG_hyperscanning_setup.jpg" alt="Acquisition configuration in Curry.png" width="700">
+</p>
+
+<p align="left"><strong>Figure 1.</strong> HyperYESNO experimental setup.</p>
 
 <img src="Picture_of _experimental_EEG_hyperscanning_setup.jpg" alt="HyperYESNO experimental setup" width="600">
 
@@ -16,17 +24,12 @@ C:\Users\<user_name>\AppData\Roaming\Neuroscan\Curry 7\Acquisition\DeviceConfigu
 Curry 7 cannot separate channels of two headboxes into different groups (unlike Curry 9), so they'd have to separate the data in post-processing.
 The impedance check will work for both headboxes simultaneously. However, the location of the little impedance windows will not be nicely separated, so values from both caps will be displayed intertwined (unlike in Curry 9).
 
-Below, there is a screenshot showing an example of how the configuration could look in Curry. The idea is to use the same labels on both headboxes, but append "-2" to the labels on the second headbox.
+[Figure 2](#figure-2) is a screenshot showing an example of how the configuration could look in Curry. The idea is to use the same labels on both headboxes, but append "-2" to the labels on the second headbox.
 
+<a id="figure-2"></a>
 
-<img src="Acquisition configuration in Curry.png" alt="HyperYESNO experimental setup" width="450">
-
-As shown in [Figure 1](#figure-1), the participants completed the task using separate screens.
-
-<a id="figure-1"></a>
-
-<p align="center">
+<p align="left">
   <img src="Acquisition configuration in Curry.png" alt="Acquisition configuration in Curry.png" width="450">
 </p>
 
-<p align="center"><strong>Figure 1.</strong> Acquisition configuration in Curry.png.</p>
+<p align="left"><strong>Figure 2.</strong> Acquisition configuration in Curry.png.</p>
