@@ -11,12 +11,12 @@ Stimuli were 32 target words drawn from four superordinate categories: Animals, 
 Before the main task, participants completed two practice trials to familiarise themselves with the procedure and response pad. Sessions were also video-recorded with the laptops' front cameras. Participants were asked to keep their gaze on the screen and remain within the camera frame during the entire experiment. We also asked participants to fill out an "Interaction Rating Scale" (included here) at the end of the experiment.
 
 An EEG hyperscanning setup was implemented using two 64-channel Neuvo amplifiers from NeuroScan. The file "SynAmpsRT - 2 subjects - Quik-Cap 64.xml" contains the workspace used for the recording. They can copy it to:
-C:\Users\<user_name>\AppData\Roaming\Neuroscan\Curry 7\Acquisition\DeviceConfigurations
-
-The AppData folder may be hidden.
-
-<img src="Acquisition configuration in Curry.png" alt="HyperYESNO experimental setup" width="450">
-Screenshot showing an example of how the configuration could look in Curry. The idea is to use the same labels on both headboxes, but append "-2" to the labels on the second headbox.
+C:\Users\<user_name>\AppData\Roaming\Neuroscan\Curry 7\Acquisition\DeviceConfigurations  (The AppData folder may be hidden!)
 
 Curry 7 cannot separate channels of two headboxes into different groups (unlike Curry 9), so they'd have to separate the data in post-processing.
 The impedance check will work for both headboxes simultaneously. However, the location of the little impedance windows will not be nicely separated, so values from both caps will be displayed intertwined (unlike in Curry 9).
+
+Screenshot showing an example of how the configuration could look in Curry. The idea is to use the same labels on both headboxes, but append "-2" to the labels on the second headbox.
+<img src="Acquisition configuration in Curry.png" alt="HyperYESNO experimental setup" width="450">
+
+
