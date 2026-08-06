@@ -1,4 +1,4 @@
-# Experiment EEG-Hyperscanning-YESNO
+# Experiment Hyper-YESNO
 
 ### Task and Procedure
 
