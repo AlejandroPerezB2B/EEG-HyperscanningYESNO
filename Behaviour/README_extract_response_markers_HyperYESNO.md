@@ -1,8 +1,6 @@
-# HyperYESNO response-marker behavioural extraction
+## extract_response_markers_HyperYESNO.m
 
-## Overview
-
-`extract_response_markers_HyperYESNO.m` extracts the minimal behavioural information that can be obtained reliably from the event markers stored in the combined HyperYESNO EEG recordings.
+Extracts the minimal behavioural information that can be obtained reliably from the event markers stored in the combined HyperYESNO EEG recordings.
 
 The function processes:
 
@@ -29,7 +27,7 @@ The function does not estimate the number of correctly guessed targets. Correct 
 
 ---
 
-## Main rationale
+### Main rationale
 
 The EEG event stream provides an objective record of:
 
@@ -53,7 +51,7 @@ calculated for the complete dyad and separately for A as Knower and B as Knower.
 
 Timing measures are also retained, but they should be interpreted cautiously because recordings may include interruptions, missing markers, or incomplete sessions.
 
-## Expected folder structure
+### Expected folder structure
 
 ```text
 E:\EEG_data_HyperYESNO
@@ -72,7 +70,7 @@ E:\EEG_data_HyperYESNO
 
 ---
 
-## Response markers
+### Response markers
 
 | Marker | Registered response | Knower | Guesser |
 |---|---|---|---|
@@ -95,7 +93,7 @@ The function also recognizes the original numeric Curry codes:
 
 ---
 
-## Marker runs
+### Marker runs
 
 The function creates a secondary descriptive unit called a **marker run**.
 
@@ -126,7 +124,7 @@ Run 1: three A-Knower responses
 Run 2: two B-Knower responses
 ```
 
-### Important limitation
+#### Important limitation
 
 A marker run is not treated as a verified experimental trial.
 
@@ -138,7 +136,7 @@ They are retained because they provide a limited normalization of response count
 
 ---
 
-## Extracted response-level measures
+### Extracted response-level measures
 
 The `responseTable` contains one row per valid YES or NO marker.
 
@@ -159,7 +157,7 @@ IntervalFromPreviousResponseSec
 SourceFile
 ```
 
-### `Response`
+#### `Response`
 
 The registered response:
 
@@ -168,15 +166,15 @@ YES
 NO
 ```
 
-### `Knower` and `Guesser`
+#### `Knower` and `Guesser`
 
 The participant roles derived directly from the marker label.
 
-### `TimeFromRecordingStartSec`
+#### `TimeFromRecordingStartSec`
 
 The marker latency converted from samples to seconds.
 
-### `IntervalFromPreviousResponseSec`
+#### `IntervalFromPreviousResponseSec`
 
 The interval between the current response and the preceding response marker in the recording.
 
@@ -184,7 +182,7 @@ The first response has a missing value because no preceding response exists.
 
 ---
 
-## Run-level measures
+### Run-level measures
 
 The `runTable` contains one row per consecutive same-Knower marker run.
 
@@ -206,29 +204,29 @@ MedianInterResponseIntervalSec
 ResponseRatePerMin
 ```
 
-### `RunSpanSec`
+#### `RunSpanSec`
 
 The interval between the first and last response marker in the run.
 
 This does not include the time from trial onset to the first response and should not be interpreted as complete trial duration.
 
-### `NumResponses`
+#### `NumResponses`
 
 The total number of registered responses in the run.
 
-### `YesProportion`
+#### `YesProportion`
 
 ```text
 NumYes / NumResponses
 ```
 
-### Inter-response intervals
+#### Inter-response intervals
 
 These describe the timing between consecutive registered responses within the same run.
 
 ---
 
-## Dyad-level measures
+### Dyad-level measures
 
 The `dyadSummary` contains one row per dyad.
 
@@ -256,19 +254,19 @@ MeanRunSpanSec
 MedianRunSpanSec
 ```
 
-### Primary interpretation
+#### Primary interpretation
 
 The response counts are the most direct behavioural measures available from the EEG markers.
 
 A larger number of responses indicates that more YES/NO exchanges were registered during the recorded task. It does not directly indicate better or worse performance because more questions may reflect either sustained engagement or greater difficulty identifying the target.
 
-### `ResponseActiveSpanSec`
+#### `ResponseActiveSpanSec`
 
 The interval between the first and last valid response marker in the recording.
 
 This is preferable to using the entire EEG recording duration, but it can still be affected by pauses, interruptions, incomplete sessions, or technical problems.
 
-### `ResponsesPerActiveMinute`
+#### `ResponsesPerActiveMinute`
 
 The total number of responses divided by `ResponseActiveSpanSec`.
 
@@ -276,7 +274,7 @@ This value is descriptive and should not be treated as a pure response-speed mea
 
 ---
 
-## Role-specific measures
+### Role-specific measures
 
 The `roleSummary` contains two rows per dyad:
 
@@ -293,9 +291,9 @@ Role-specific rows are repeated observations from the same dyad and should not b
 
 ---
 
-## Measures not estimated by this function
+### Measures not estimated by this function
 
-### Number of correctly guessed targets
+#### Number of correctly guessed targets
 
 The response markers do not establish whether the Guesser identified the exact target word.
 
@@ -303,17 +301,17 @@ A participant may receive several positive responses while approaching the targe
 
 Target accuracy should be coded from the video recordings.
 
-### Trial duration
+#### Trial duration
 
 The function does not calculate the time from `BlockStart` to the final response because the `BlockStart` sequence is inconsistent across several recordings.
 
-### Number of completed trials
+#### Number of completed trials
 
 Marker runs are not counted as confirmed completed trials.
 
 ---
 
-## Basic usage
+### Basic usage
 
 ```matlab
 [responseTable, runTable, dyadSummary, roleSummary, qcTable] = ...
@@ -324,7 +322,7 @@ Marker runs are not counted as confirmed completed trials.
 
 ---
 
-## Processing selected dyads
+### Processing selected dyads
 
 ```matlab
 [responseTable, runTable, dyadSummary, roleSummary, qcTable] = ...
@@ -335,7 +333,7 @@ Marker runs are not counted as confirmed completed trials.
 
 ---
 
-## Optional temporal splitting of marker runs
+### Optional temporal splitting of marker runs
 
 By default, a marker run is split only when the Knower changes:
 
@@ -359,7 +357,7 @@ The default is recommended until the response-interval distribution has been exa
 
 ---
 
-## Optional arguments
+### Optional arguments
 
 | Option | Default | Description |
 |---|---:|---|
@@ -370,7 +368,7 @@ The default is recommended until the response-interval distribution has been exa
 
 ---
 
-## Quality control
+### Quality control
 
 The function reports:
 
@@ -390,7 +388,7 @@ The function continues with the next dyad after a problem.
 
 ---
 
-## Output files
+### Output files
 
 The function saves:
 
@@ -411,7 +409,7 @@ QC
 
 ---
 
-## Table-construction approach
+### Table-construction approach
 
 The function uses structure arrays and `struct2table`.
 
@@ -426,7 +424,7 @@ This simplifies variable typing and avoids the table-conversion error encountere
 
 ---
 
-## Recommended analysis strategy
+### Recommended analysis strategy
 
 The most defensible main behavioural variables are:
 
