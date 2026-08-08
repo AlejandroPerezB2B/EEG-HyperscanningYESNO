@@ -511,3 +511,471 @@ Run the analysis without saving figures:
     'E:\EEG_data_HyperYESNO', ...
     'SaveFigures', false);
 ```
+
+## Step 10b — Spatial cluster-based permutation analysis
+
+**Function:** `step10b_spatial_cluster_permutation_GCMI_HyperYESNO.m`
+
+This function performs a spatial cluster-based permutation analysis of the surrogate-corrected **YES–NO lagged GCMI difference**.
+
+It is an alternative and complementary analysis to the original Step 10. Whereas the original Step 10 forms clusters across adjacent lags within each ROI pair, Step 10b analyses each lag separately and forms clusters across anatomically neighbouring **inter-brain connections**.
+
+### Input contrast
+
+The function uses the primary dyad-level contrast generated in Step 9:
+
+```matlab
+step9Data.yesMinusNoPrimary
+```
+
+defined as:
+
+```text
+0.5 × [(YES_AKnower − NO_AKnower) +
+       (YES_BKnower − NO_BKnower)]
+```
+
+The **dyad is the statistical unit**.
+
+The sign of the contrast is therefore interpreted as:
+
+```text
+positive value → surrogate-corrected GCMI is larger for YES than NO
+negative value → surrogate-corrected GCMI is larger for NO than YES
+```
+
+---
+
+### Independent analysis of each lag
+
+The lag dimension is not used to form clusters.
+
+Each lag is analysed independently:
+
+```text
+-500 ms
+-450 ms
+...
+0 ms
+...
++450 ms
++500 ms
+```
+
+A spatial cluster can therefore never extend from one lag to another.
+
+At each lag, the complete `20 × 20` Knower-ROI × Guesser-ROI connectivity matrix is analysed independently.
+
+---
+
+### Anatomical ROI neighbourhood
+
+The 20 source ROIs correspond to parcels from the **Desikan–Killiany cortical parcellation**.
+
+Two ROIs are considered neighbours only when their cortical parcels **share a boundary on the cortical surface**.
+
+This relationship is derived from the FreeSurfer `fsaverage` cortical mesh. Two parcels are considered adjacent when at least one triangular-mesh edge directly connects:
+
+- a vertex belonging to the first parcel, and
+- a vertex belonging to the second parcel.
+
+Euclidean distance between ROI centroids is therefore **not** used to determine anatomical adjacency.
+
+Left- and right-hemisphere parcels are not considered neighbours across the interhemispheric fissure.
+
+---
+
+### Inter-brain connection neighbourhood
+
+Spatial clustering is performed over **inter-brain connections**, rather than individual ROIs.
+
+For an inter-brain connection:
+
+```text
+Knower ROI i → Guesser ROI j
+```
+
+another connection is considered adjacent when one endpoint remains identical and the other changes to an anatomically neighbouring ROI.
+
+For example:
+
+```text
+(i,j) ~ (k,j)
+```
+
+when Knower ROIs `i` and `k` are anatomical neighbours.
+
+Similarly:
+
+```text
+(i,j) ~ (i,l)
+```
+
+when Guesser ROIs `j` and `l` are anatomical neighbours.
+
+Connections in which **both endpoints change simultaneously** are not directly considered neighbours.
+
+This provides a conservative endpoint-wise definition of spatial adjacency.
+
+---
+
+### Statistical procedure
+
+At each lag independently, the function:
+
+1. Calculates a one-sample t statistic against zero for each of the 400 inter-brain ROI connections.
+2. Applies a two-sided cluster-forming threshold.
+3. Identifies supra-threshold connections.
+4. Forms positive and negative spatial clusters separately.
+5. Groups connections according to the anatomical connection-neighbour graph.
+6. Calculates cluster mass as:
+
+```text
+absolute cluster mass = |sum of t values within the cluster|
+```
+
+7. Generates a permutation null distribution by sign-flipping the complete YES–NO connectivity map of each dyad.
+
+During each permutation, the same sign is applied to all ROI pairs and all lags belonging to a particular dyad.
+
+The default settings are:
+
+```matlab
+'NumPermutations',      10000
+'ClusterFormingAlpha',  0.05
+'FamilyWiseAlpha',      0.05
+'RandomSeed',           20260807
+'PermutationBatchSize', 200
+'MinimumDyads',         10
+```
+
+---
+
+### Spatial FWER correction within each lag
+
+For every permutation and every lag, the largest spatial cluster mass observed anywhere in the `20 × 20` connectivity matrix is retained.
+
+The corresponding corrected p-value is:
+
+```matlab
+SpatialFWERWithinLagP
+```
+
+This controls the family-wise error rate across all inter-brain connections **within that particular lag**.
+
+The corresponding output matrices are:
+
+```matlab
+spatialData.spatialFWERWithinLagPMap
+spatialData.significantSpatialWithinLagMask
+```
+
+with dimensions:
+
+```text
+Knower ROI × Guesser ROI × Lag
+```
+
+This analysis answers:
+
+> At this particular lag, is the spatial YES–NO cluster significant after correcting across the complete inter-brain connectivity matrix?
+
+---
+
+### Global FWER correction across the lag search
+
+The function also calculates a more conservative correction accounting for the fact that all lag-specific analyses were inspected.
+
+For each permutation, the largest spatial cluster mass observed at **any independently analysed lag** is retained.
+
+The corresponding corrected p-value is:
+
+```matlab
+GlobalFWERAcrossLagsP
+```
+
+with the associated outputs:
+
+```matlab
+spatialData.globalFWERAcrossLagsPMap
+spatialData.significantGlobalAcrossLagsMask
+```
+
+Importantly, lags still do **not** form clusters with one another.
+
+This correction only accounts for the multiple lag-specific spatial analyses included in the exploratory lag search.
+
+---
+
+### Desikan–Killiany ROI mapping
+
+The HyperYESNO ROI labels are mapped to the following Desikan–Killiany parcels:
+
+| HyperYESNO ROI | Desikan–Killiany parcel |
+|---|---|
+| `IFGop` | `parsopercularis` |
+| `IFGtri` | `parstriangularis` |
+| `STG` | `superiortemporal` |
+| `MTG` | `middletemporal` |
+| `Heschl` | `transversetemporal` |
+| `SMG` | `supramarginal` |
+| `IPL` | `inferiorparietal` |
+| `Precentral` | `precentral` |
+| `RostralMFG` | `rostralmiddlefrontal` |
+| `Precuneus` | `precuneus` |
+
+The `L_` and `R_` prefixes specify the hemisphere.
+
+---
+
+### Requirements
+
+The first run requires:
+
+- MATLAB
+- FieldTrip
+- access to a FreeSurfer `fsaverage` directory containing:
+
+```text
+fsaverage/
+├── label/
+│   ├── lh.aparc.annot
+│   └── rh.aparc.annot
+└── surf/
+    ├── lh.pial
+    └── rh.pial
+```
+
+The cortical surfaces and Desikan–Killiany parcellations are read using:
+
+```matlab
+ft_read_atlas
+```
+
+The resulting 20-ROI anatomical adjacency matrix is cached so that subsequent runs do not need to reread the FreeSurfer surfaces.
+
+The cached file is:
+
+```text
+Group_GCMI/
+└── HyperYESNO_DK20_surface_boundary_adjacency.mat
+```
+
+---
+
+### Example
+
+```matlab
+[spatialData, clusterTable, roiNeighbourTable, qcTable] = ...
+    step10b_spatial_cluster_permutation_GCMI_HyperYESNO( ...
+    'E:\EEG_data_HyperYESNO', ...
+    'FsAverageDir', 'C:\MATLAB\fsaverage');
+```
+
+---
+
+### Main outputs
+
+#### `spatialData`
+
+Contains the complete statistical results.
+
+Group-level descriptive statistics:
+
+```matlab
+spatialData.groupMean
+spatialData.groupSD
+spatialData.groupSEM
+spatialData.observedT
+spatialData.pointwiseParametricP
+```
+
+Anatomical adjacency information:
+
+```matlab
+spatialData.roiAdjacencyKnower
+spatialData.roiAdjacencyGuesser
+spatialData.connectionAdjacency
+spatialData.connectionTable
+spatialData.adjacencyProvenance
+```
+
+Lag-specific spatial FWER correction:
+
+```matlab
+spatialData.spatialFWERWithinLagPMap
+spatialData.significantSpatialWithinLagMask
+```
+
+Global FWER correction across the lag search:
+
+```matlab
+spatialData.globalFWERAcrossLagsPMap
+spatialData.significantGlobalAcrossLagsMask
+```
+
+Permutation null distributions:
+
+```matlab
+spatialData.nullMaximumClusterMassByLag
+spatialData.nullMaximumClusterMassAcrossLags
+```
+
+---
+
+#### `clusterTable`
+
+Contains one row for each observed spatial cluster, including:
+
+- lag;
+- cluster sign;
+- number of connections;
+- signed cluster mass;
+- absolute cluster mass;
+- peak t statistic;
+- peak Knower ROI;
+- peak Guesser ROI;
+- mean YES–NO effect within the cluster;
+- effect at the peak connection;
+- spatial FWER-corrected p-value within the lag;
+- global FWER-corrected p-value across lags;
+- significance status;
+- list of connections belonging to the cluster.
+
+---
+
+#### `roiNeighbourTable`
+
+Lists the pairs of ROIs considered anatomical neighbours according to their shared cortical-surface boundary.
+
+This table is useful for checking the anatomical topology used to construct the inter-brain connection clusters.
+
+---
+
+#### `qcTable`
+
+Reports dyads excluded because:
+
+- a valid Step 9 primary contrast was unavailable, or
+- the primary contrast contained non-finite values.
+
+---
+
+### Saved outputs
+
+Results are saved under:
+
+```text
+E:\EEG_data_HyperYESNO\Group_GCMI\
+```
+
+including:
+
+```text
+Step10b_HyperYESNO_spatial_cluster_permutation.mat
+Step10b_HyperYESNO_spatial_cluster_permutation.xlsx
+HyperYESNO_DK20_surface_boundary_adjacency.mat
+```
+
+The Excel workbook contains the following sheets:
+
+```text
+SpatialClusters
+LagSummary
+ROINeighbours
+Connections
+QC
+AnalysisDyads
+```
+
+---
+
+### Figures
+
+Figures are saved in:
+
+```text
+Group_GCMI/
+└── Step10b_Spatial_Figures/
+```
+
+The function generates:
+
+- the Desikan–Killiany ROI adjacency matrix;
+- a summary of the minimum corrected p-value at each lag;
+- one three-panel spatial connectivity figure for every analysed lag.
+
+For each lag, the three-panel figure shows:
+
+1. the observed YES–NO t-statistic matrix;
+2. the spatial FWER-corrected result within that lag;
+3. the globally corrected result accounting for the complete lag search.
+
+---
+
+### Interpretation of significant effects
+
+The group-level effect matrix is:
+
+```matlab
+spatialData.groupMean
+```
+
+Because the analysed contrast is:
+
+```text
+YES − NO
+```
+
+the sign of each effect is interpreted as:
+
+```text
+positive effect → surrogate-corrected GCMI is larger for YES
+negative effect → surrogate-corrected GCMI is larger for NO
+```
+
+For example, to extract the spatially FWE-corrected effects at `-250 ms`:
+
+```matlab
+lagIndex = find( ...
+    spatialData.lagsMilliseconds == -250, ...
+    1, ...
+    'first');
+
+effectMatrix = ...
+    spatialData.groupMean(:,:,lagIndex);
+
+significantMask = ...
+    spatialData.significantSpatialWithinLagMask(:,:,lagIndex);
+
+significantEffect = ...
+    effectMatrix .* significantMask;
+```
+
+The resulting matrix can be interpreted as:
+
+```text
+positive non-zero value → YES > NO
+negative non-zero value → NO > YES
+zero                    → not significant
+```
+
+The same procedure can be used for any other lag, for example `300 ms`:
+
+```matlab
+lagIndex = find( ...
+    spatialData.lagsMilliseconds == 300, ...
+    1, ...
+    'first');
+
+effectMatrix = ...
+    spatialData.groupMean(:,:,lagIndex);
+
+significantMask = ...
+    spatialData.significantSpatialWithinLagMask(:,:,lagIndex);
+
+significantEffect = ...
+    effectMatrix .* significantMask;
+```
+
+Source: `step10b_spatial_cluster_permutation_GCMI_HyperYESNO.m`. :contentReference[oaicite:0]{index=0}
