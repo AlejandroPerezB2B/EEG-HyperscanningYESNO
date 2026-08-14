@@ -346,3 +346,45 @@ Each analysis generated a `.csv` file containing the following frame-level varia
 - fused head-motion metrics.
 
 Optionally, a visual `.mp4` preview was generated with the face bounding box and three-dimensional pose axes overlaid on the original video.
+
+# Hyperscanning_v1
+
+Pipeline reproducible para **diarización de audio, análisis multimodal y sincronización con EEG hyperscanning**
+
+El repositorio integra:
+- diarización automática (WhisperX / RMS + Viterbi)
+- transcripción alineada por hablante
+- análisis de emociones en vídeo
+- ejecución batch sobre múltiples diadas
+
+---
+
+## Estructura del repositorio
+
+- `transcribe_diarize_whisperx.py`  
+  Transcripción y diarización automática por segmento.
+
+- `diarizing_by_RMS_v11_roles_viterbi.py`  
+  Diarización alternativa basada en RMS + Viterbi (fallback / comparación).
+
+- `video_emotion_analyzer.py`  
+  Extracción de emociones faciales a partir de vídeo.
+
+- `run_pipeline_all_Dyads.sh`  
+  Script maestro para ejecutar el pipeline completo sobre todas las diadas.
+
+- `requirements_diarization.txt`  
+  Dependencias Python necesarias.
+
+---
+
+## Requisitos
+
+- Python ≥ 3.9  
+- FFmpeg instalado en el sistema  
+- GPU recomendada para WhisperX (opcional)
+
+Instalación rápida:
+```bash
+pip install -r requirements_diarization.txt
+
