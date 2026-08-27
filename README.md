@@ -1,7 +1,7 @@
 ## Experiment Hyper-YESNO
 
 In the manuscript:\
-**Neural and behavioural dynamics of conversational grounding during Yes-No verbal interactions**
+**Neural and behavioural dynamics of conversational grounding during Yes-No verbal interactions**\
 *Alejandro Pérez, Noah Britt, Mohammad Chaposhloo, Aaliyah Kapadia, Damián Jan, Paulo Barraza, Lorna García-Pentón,
 Manuel de Vega, Sukhvinder Obhi*
 
